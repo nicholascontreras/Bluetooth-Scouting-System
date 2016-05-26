@@ -10,8 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.first.team2485.scoutingform.bluetooth.BluetoothPanel;
-
 /**
  * 
  * @author Troy Appel
