@@ -1,5 +1,6 @@
 from bluetooth import *
 import sys
+import time
 
 if sys.version < '3':
     input = raw_input
@@ -35,20 +36,18 @@ print("connecting to Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, hos
 sock=BluetoothSocket( RFCOMM )
 sock.connect((host, port))
 
-print("connected.  type stuff")
-while True:
-    file = open("unsentData/scoutingData.csv", "r")
-    data = file.read()
-    data.close()
-    if len(data) == 0: 
-        print("No data")
-    print("Sending: " + data)
-    sock.send(data)
-    print("Sent")
-    newFile = open(gmtime(0) + ".csv", "w")
-    newFile.write(data)
-    newFile.close()
-    break;
+file = open("unsentData/scoutingData.csv", "r")
+data = file.read()
+data.close()
+if len(data) == 0: 
+    print("No data")
+print("Sending: " + data)
+sock.send(data)
+print("Sent")
+millis = int(round(time.time() * 1000))
+newFile = open(str(millis) + ".csv", "w")
+newFile.write(data)
+newFile.close()
 
 print("Closing socket")
 sock.close()

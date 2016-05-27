@@ -14,6 +14,7 @@ import org.first.team2485.scoutingform.questions.CheckboxQuestion;
 import org.first.team2485.scoutingform.questions.FreeResponseQuestion;
 import org.first.team2485.scoutingform.questions.MultipleChoiceQuestion;
 import org.first.team2485.scoutingform.questions.QuestionGroup;
+import org.first.team2485.scoutingform.questions.ShortResponseQuestion;
 import org.first.team2485.scoutingform.questions.SpinnerQuestion;
 
 /**
@@ -24,7 +25,7 @@ import org.first.team2485.scoutingform.questions.SpinnerQuestion;
  */
 @SuppressWarnings("serial")
 public class ScoutingForm extends JPanel {
-  
+
 	private JFrame frame;
 	private ScoutingFormTab[] tabs;
 	private JTabbedPane tabbedPane;
@@ -36,26 +37,27 @@ public class ScoutingForm extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
 		this.tabbedPane = new JTabbedPane();
-		
+
 		this.tabs = tabs;
 		for (ScoutingFormTab tab : tabs) {
 			tabbedPane.add(tab.getName(), new JScrollPane(tab));
 		}
-		
+
 		this.add(tabbedPane);
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout());
 		buttonPane.add(new SubmitButton(this));
-		buttonPane.add(new QuitButton(this.frame));//this handles all quitting logic
+		buttonPane.add(new QuitButton(this.frame));// this handles all quitting
+													// logic
 		buttonPane.add(new ClearButton(tabs, this.frame));
+		buttonPane.add(new SetupButton(this));
 		this.add(buttonPane);
 
-
-		frame.pack(); 
+		frame.pack();
 		frame.setVisible(true);
-		this.repaint(); 
-		
+		this.repaint();
+
 	}
 
 	public String submit() {
@@ -69,14 +71,25 @@ public class ScoutingForm extends JPanel {
 		return output;
 
 	}
-	
+
 	public JFrame getFrame() {
 		return frame;
+	}
+	
+	public void reset() {
+		for (ScoutingFormTab tab : tabs) {
+			tab.clear();
+		}
+		
+		tabbedPane.setSelectedIndex(0);
 	}
 
 	public static void main(String[] args) {
 
+		//@formatter:off
+
 		ScoutingFormTab prematch = new ScoutingFormTab("Prematch",
+			new ShortResponseQuestion("Scout(s) Name:", false),
 			new SpinnerQuestion("Team number"),
 			new SpinnerQuestion("Match Number:")
 		);
@@ -137,7 +150,9 @@ public class ScoutingForm extends JPanel {
 			new FreeResponseQuestion("Comments:")
 		);
 		
+		//@formatter:on
+
 		new ScoutingForm(prematch, autonomous, teleop, ratings, misc);
-		
+
 	}
 }

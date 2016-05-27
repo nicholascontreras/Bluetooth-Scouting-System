@@ -71,7 +71,7 @@ public class FormIO {
 	}
 
 	private boolean setupPython() {
-		
+
 		Process pyVersion;
 
 		while (true) {
@@ -81,10 +81,11 @@ public class FormIO {
 			if (pyVersion != null) {
 				break;
 			}
-			
+
 			System.out.println("No Python");
-			
-			JTextArea message = new JTextArea("You do not have Python, download it here:   \nhttps://www.python.org/downloads/");
+
+			JTextArea message = new JTextArea(
+					"You do not have Python, download it here:   \nhttps://www.python.org/downloads/");
 			message.setEditable(false);
 			JOptionPane.showMessageDialog(null, message);
 		}
@@ -122,15 +123,6 @@ public class FormIO {
 		return true;
 	}
 
-	public static void main(String[] args) {
-
-		FormIO f = new FormIO();
-
-		System.out.println(f.setup());
-
-		System.out.println(f.saveAndSendData("45,23,egdfsd,,"));
-	}
-
 	private static Process cmd(String cmd, boolean block) {
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
@@ -158,7 +150,7 @@ public class FormIO {
 
 		if (!curFiles.get(0).exists()) {
 			curFiles.clear();
-			curFiles.add(new File("/")); // MAC base dir
+			curFiles.add(new File("~/")); // MAC base dir
 		}
 
 		while (curFiles.size() > 0) {
@@ -186,20 +178,29 @@ public class FormIO {
 		return null;
 	}
 
-	public String saveAndSendData(String data) {
+	public String saveAndSendData(String data, boolean saveFirst, boolean forceWrite) {
 
-		FileWriter fileWriter;
-		try {
-			fileWriter = new FileWriter(new File(savePath, "scoutingData.csv"));
+		if (saveFirst) {
 
-			fileWriter.write(data);
+			File file = new File(savePath, "scoutingData.csv");
 
-			fileWriter.flush();
+			if (file.exists() && !forceWrite) {
+				return "Unsent data already exists";
+			}
 
-			fileWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "Failed to write scouting data to file";
+			FileWriter fileWriter;
+			try {
+				fileWriter = new FileWriter(file);
+
+				fileWriter.write(data);
+
+				fileWriter.flush();
+
+				fileWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return "Failed to write scouting data to file";
+			}
 		}
 
 		try {
