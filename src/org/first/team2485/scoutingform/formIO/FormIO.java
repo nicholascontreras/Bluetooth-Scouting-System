@@ -17,14 +17,14 @@ public class FormIO {
 
 	private File savePath;
 	private File scriptPath;
-
+	private static boolean isMac; // gets set in findDesktop
 	public String setup() {
 
 		if (!setupFiles()) {
 			return "Failed to setup file path";
 		}
 
-		if (!setupPython()) {
+		if (!(isMac ? setupPythonMac() : setupPythonWindows())) {
 			return "Failed to setup Python";
 		}
 
@@ -70,7 +70,7 @@ public class FormIO {
 		return true;
 	}
 
-	private boolean setupPython() {
+	private boolean setupPythonWindows() {
 
 		Process pyVersion;
 
@@ -123,6 +123,39 @@ public class FormIO {
 		return true;
 	}
 
+	private boolean testPythonMac() {
+		try {
+			Process p = Runtime.getRuntime().exec(new String[] {"ls",  "/Library/Python/2.7/site-packages/"});
+			p.waitFor();
+			String s = convertStreamToString(p.getInputStream());
+			return s.matches("[\\S\\s]+lightblue.+egg[\\S\\s]+");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private boolean setupPythonMac() {
+		while (!testPythonMac()) {
+			String command = "cd ~/Downloads;";
+			command += "git clone https://github.com/jmcculloch2018/lightblue-0.4.git;";
+			command += "cd lightblue*;";
+			command += "sudo python setup.py install;";
+			String args[] = { "osascript",  "-e",  "tell application \"Terminal\" to do script \"" + command +  "\"" };
+			try {
+				Runtime.getRuntime().exec(args);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			JOptionPane.showMessageDialog(null, "Click on terminal, type your password where prompted, then press OK.");
+		}
+		return true;
+	}
+
 	private static Process cmd(String cmd, boolean block) {
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
@@ -147,10 +180,11 @@ public class FormIO {
 		ArrayList<File> curFiles = new ArrayList<File>();
 
 		curFiles.add(new File("C:/")); // Windows base dir
-
+		isMac = false;
 		if (!curFiles.get(0).exists()) {
 			curFiles.clear();
-			curFiles.add(new File("~/")); // MAC base dir
+			curFiles.add(new File("/Users/")); // MAC base dir
+			isMac = true;
 		}
 
 		while (curFiles.size() > 0) {
