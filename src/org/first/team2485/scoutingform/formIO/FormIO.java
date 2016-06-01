@@ -15,9 +15,26 @@ import javax.swing.JTextArea;
 
 public class FormIO {
 
+	private static FormIO instance;
+	
 	private File savePath;
 	private File scriptPath;
+	
+	private Process pythonProcess;
+	
 	private static boolean isMac; // gets set in findDesktop
+	
+	public static FormIO getInstance() {
+		if (instance == null) {
+			instance = new FormIO();
+		}
+		return instance;
+	}
+	
+	public Process getProcess() {
+		return pythonProcess;
+	}
+	
 	public String setup() {
 
 		if (!setupFiles()) {
@@ -29,6 +46,20 @@ public class FormIO {
 		}
 
 		return "Setup Sucessful";
+	}
+	
+	public void startScript() {
+		
+		if (pythonProcess != null) {
+			pythonProcess.destroyForcibly();
+		}
+		
+		try {
+			pythonProcess = cmd("py " + scriptPath.getCanonicalPath(), false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private boolean setupFiles() {
@@ -96,16 +127,18 @@ public class FormIO {
 		String version = versionResult.substring(versionResult.indexOf(" ") + 1);
 		System.out.println(version);
 
-		int[] minVersion = { 3, 5, 1 };
+		int[] minVersion = { 2, 7, 1 };
 
 		for (int i = 0; i < minVersion.length; i++) {
 
 			System.out.println("Check: " + version.charAt(0) + " : " + minVersion[i]);
 
 			if (Integer.parseInt(version.charAt(0) + "") < minVersion[i]) {
-				System.out.println("Failed, installing");
-				cmd("msiexec /i python-3.5.1.msi", true);
-				break;
+				JTextArea message = new JTextArea(
+						"Your Python version is too outdated, update it here:   \nhttps://www.python.org/downloads/");
+				message.setEditable(false);
+				JOptionPane.showMessageDialog(null, message);
+				return false;
 			}
 
 			if (Integer.parseInt(version.charAt(0) + "") > minVersion[i]) {
@@ -132,7 +165,6 @@ public class FormIO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -238,16 +270,11 @@ public class FormIO {
 		}
 
 		try {
-			Process p = cmd("py " + scriptPath.getCanonicalPath(), true);
-
-			if (p.exitValue() == 1) {
-				return "Unable to connect to Scouting Server";
-			} else {
-				return "Sucessfuly sent scouting data";
-			}
+			pythonProcess.getOutputStream().write(1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "An error occurred sending the data";
 		}
+		return "Sent data sucessfully";
 	}
 }

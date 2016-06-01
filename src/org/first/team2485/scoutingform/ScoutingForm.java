@@ -4,12 +4,14 @@ import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.first.team2485.scoutingform.formIO.FormIO;
 import org.first.team2485.scoutingform.questions.CheckboxQuestion;
 import org.first.team2485.scoutingform.questions.FreeResponseQuestion;
 import org.first.team2485.scoutingform.questions.MultipleChoiceQuestion;
@@ -31,6 +33,17 @@ public class ScoutingForm extends JPanel {
 	private JTabbedPane tabbedPane;
 
 	public ScoutingForm(ScoutingFormTab... tabs) {
+		
+		String setupResult = FormIO.getInstance().setup();
+		
+		JOptionPane.showMessageDialog(null, setupResult);
+		
+		if (!setupResult.equals("Setup Sucessful")) {
+			System.exit(1);
+		}
+		
+		FormIO.getInstance().startScript();
+		
 		frame = new JFrame();
 		frame.add(this);
 		frame.setSize(1000, 600);

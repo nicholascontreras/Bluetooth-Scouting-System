@@ -36,19 +36,21 @@ print("connecting to Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, hos
 sock=BluetoothSocket( RFCOMM )
 sock.connect((host, port))
 
-file = open("unsentData/scoutingData.csv", "r")
-data = file.read()
-data.close()
-if len(data) == 0: 
-    print("No data")
-print("Sending: " + data)
-sock.send(data)
-print("Sent")
-millis = int(round(time.time() * 1000))
-newFile = open(str(millis) + ".csv", "w")
-newFile.write(data)
-newFile.close()
+while True:
 
-print("Closing socket")
-sock.close()
-sys.exit(0)
+    consoleInput = input("Input:")
+    print("Input is: " + consoleInput)
+
+    if consoleInput.find("BROADCAST") != -1:
+        sock.send(consoleInput)
+    else 
+        file = open("unsentData/scoutingData.csv", "r")
+        data = file.read()
+        data.close()
+        print("Sending: " + data)
+        sock.send(data)
+        print("Sent")
+        millis = int(round(time.time() * 1000))
+        newFile = open(str(millis) + ".csv", "w")
+        newFile.write(data)
+        newFile.close()
