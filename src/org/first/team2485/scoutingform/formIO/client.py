@@ -38,7 +38,7 @@ sock.connect((host, port))
 
 while True:
 
-    consoleInput = input("Input:")
+    consoleInput = input("I")
     print("Input is: " + consoleInput)
 
     if consoleInput.find("BROADCAST") != -1:

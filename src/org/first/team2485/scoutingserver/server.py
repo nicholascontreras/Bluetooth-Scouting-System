@@ -40,7 +40,7 @@ while True:
   except Exception:
     print("no incoming connections")
 
-  consoleInput = input("Input:")
+  consoleInput = input("I")
   print("Input is: " + consoleInput)
   queuedBroadcasts.append(consoleInput)
 
