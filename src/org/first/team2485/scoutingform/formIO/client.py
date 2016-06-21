@@ -9,7 +9,7 @@ addr = None
 
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
 
-print("looking for scouting server...")
+print("looking for scouting server....")
 
 service_matches = find_service( uuid = uuid, address = addr )
 
