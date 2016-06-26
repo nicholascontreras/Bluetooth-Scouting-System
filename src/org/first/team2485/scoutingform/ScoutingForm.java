@@ -147,7 +147,7 @@ public class ScoutingForm extends JPanel {
 		
 		ScoutingFormTab ratings = new ScoutingFormTab("Ratings", 
 			new MultipleChoiceQuestion("Speed", "Snail", "Slow", "Average", "Speedy", "Lightning"),
-			new MultipleChoiceQuestion("Manueverability", "Sluggish", "Unresponsive", "Average" , "Responsive", "Nimble"),
+			new MultipleChoiceQuestion("Manueverability", "Unresponsive", "Sluggish", "Average" , "Responsive", "Nimble"),
 			new MultipleChoiceQuestion("Shooter Repeatability", "Unreliable", "Sketchy", "Average", "Consistent", "Reliable", "N/A"), 
 			new MultipleChoiceQuestion("Shooter Speed", "Snail", "Slow", "Average", "Speedy", "Lightning", "N/A"),
 			new MultipleChoiceQuestion("Defense", "Shitty", "Decent", "Average", "Good", "Badass", "N/A"), 

@@ -1,6 +1,8 @@
 from bluetooth import *
 import sys
 import time
+import threading
+import select
 
 if sys.version < '3':
     input = raw_input
@@ -33,11 +35,17 @@ for x in xrange(0, len(service_matches)):
 
 print("connecting to Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, host))
 
-sock=BluetoothSocket( RFCOMM )
-sock.connect((host, port))
+global sock=BluetoothSocket( RFCOMM )
+try:
+    sock.connect((host, port))
+except:
+    print ("failed to connect - Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, host))
+    sys.exit()
+
+global t==Timer(10.0. receiveFromServer)
+    t.start()
 
 while True:
-
     consoleInput = input("I")
     print("Input is: " + consoleInput)
 
@@ -53,4 +61,20 @@ while True:
         millis = int(round(time.time() * 1000))
         newFile = open(str(millis) + ".csv", "w")
         newFile.write(data)
-        newFile.close()
+        newFile.close()][]
+
+
+def receiveFromServer():
+    ready_to_read, ready_to_write, in_error = \
+           select.select([sock,], [sock,], [], 1)
+    if ready_to_read>0:
+        recv = conn.recv(2048)
+        print (recv)
+    if not (ready_to_read or ready_to_write or in_error):
+        print "no server message" 
+    t.start()
+
+
+
+
+
