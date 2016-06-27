@@ -65,8 +65,11 @@ while True:
 
 
 def receiveFromServer():
-    ready_to_read, ready_to_write, in_error = \
-           select.select([sock,], [sock,], [], 1)
+	try:
+    		ready_to_read, ready_to_write, in_error = \
+    		select.select([sock,], [sock,], [], 1)
+           except select.error:
+           		pass
     if ready_to_read>0:
         recv = conn.recv(2048)
         print (recv)
