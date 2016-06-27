@@ -1,7 +1,9 @@
 package org.first.team2485.scoutingserver;
 
 import java.awt.Toolkit;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -55,5 +57,34 @@ public class ScoutingServer {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static String loadFormVersion(File jarLoc) throws IOException {
+		
+		FileReader fileReader = new FileReader(jarLoc/*"C:/Users/Nicholas/Desktop/More Stuff/SpamKill.jar"*/);
+		
+		System.out.println("file");
+		
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		
+		System.out.println("Buffer");
+		
+		String data = "";
+		
+		String curLine = bufferedReader.readLine();
+		
+		System.out.println("read");
+		
+		while (curLine != null) {
+			data += "!@#$%^&*()" + curLine;
+			curLine = bufferedReader.readLine();
+		}
+		
+		bufferedReader.close();
+		
+		System.out.println("print");
+		
+		System.out.println(data);
+		return data;
 	}
 }

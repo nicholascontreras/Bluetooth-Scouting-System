@@ -1,6 +1,10 @@
 package org.first.team2485.scoutingform.formIO;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +15,7 @@ import java.nio.file.StandardCopyOption;
 //import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -278,5 +283,21 @@ public class FormIO {
 			return "An error occurred sending the data";
 		}
 		return "Sent data sucessfully";
+	}
+	
+	public static void saveFormVersion(String newFormVersion) throws IOException {
+		
+		String[] dataToWrite = newFormVersion.split(Pattern.quote("!@#$%^&*()"));
+		
+		FileWriter fileWriter = new FileWriter(new File(findDesktop(), "ScoutingForm" + System.currentTimeMillis() + ".jar"));
+		
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		
+		for (String s : dataToWrite) {
+			bufferedWriter.write(s);
+			bufferedWriter.newLine();
+		}
+		
+		bufferedWriter.close();
 	}
 }
