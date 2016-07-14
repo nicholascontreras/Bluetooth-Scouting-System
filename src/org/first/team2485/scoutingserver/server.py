@@ -62,11 +62,12 @@ while True:
         print ("connection error")
         break
     if len(ready_to_read) > 0:
-        recv = conn.recv(2048)
-        millis = int(round(time.time() * 1000))
-        newFile = open(str(millis) + ".csv", "w")
-        newFile.write(recv)
-        newFile.close()
+    	if (!(recv.find("BRODCAST"))):
+        	recv = conn.recv(2048)
+        	millis = int(round(time.time() * 1000))
+        	newFile = open(str(millis) + ".csv", "w")
+        	newFile.write(recv)
+        	newFile.close()
 
         if recv.find("BROADCAST") != -1:
           queuedBroadcasts.append(recv)
