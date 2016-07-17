@@ -62,7 +62,7 @@ while True:
         conn.close()
         connectedSockets.remove(curSocket)
         # connection error event here, maybe reconnect
-        print ("connection error")
+        print ("connection error ")
         break
     if len(ready_to_read) > 0:
     	if (!(recv.find("BRODCAST")) && (!(recv.find("SendToServer")))):
