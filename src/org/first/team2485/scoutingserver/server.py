@@ -1,6 +1,9 @@
 from bluetooth import *
 import time
 import select
+import Tkinter
+import tkMessageBox
+
 
 if sys.version < '3':
     input = raw_input
@@ -62,7 +65,7 @@ while True:
         print ("connection error")
         break
     if len(ready_to_read) > 0:
-    	if (!(recv.find("BRODCAST"))):
+    	if (!(recv.find("BRODCAST")) && (!(recv.find("SendToServer")))):
         	recv = conn.recv(2048)
         	millis = int(round(time.time() * 1000))
         	newFile = open(str(millis) + ".csv", "w")
@@ -72,7 +75,25 @@ while True:
         if recv.find("BROADCAST") != -1:
           queuedBroadcasts.append(recv)
         # do stuff with received data
-        print ("recieved: " + recv)
+          print ("recieved: " + recv)
+
+        if recv.find("SendToServer") != -1:
+        	recv = conn.recv(2048)
+        	print ("received:" + recv)
+        	def replyToClient():
+        		master = Tk();
+        		inputReply = Entry(master)
+        		inputReply.pack()
+        		inputReply.focus_set()
+        		serverInput=inputReply.get()
+        		curSocket.send(serverInput)
+        		print ("Message Sent")
+
+        	top = Tkinter.Tk()
+        	serverReply = Tkinter.Button(top, text="ReplyToDirectMessage", command=replyToClient)
+        	serverReply.pack()
+        	top.mainloop()
+
     if len(ready_to_write) > 0:
         # connection established, send some stuff
         if broadcastToSend != "IGNORE":
