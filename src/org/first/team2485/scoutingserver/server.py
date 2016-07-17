@@ -65,7 +65,7 @@ while True:
         print ("connection error")
         break
     if len(ready_to_read) > 0:
-    	if (!(recv.find("BRODCAST")) && (!(recv.find("SendToServer")))):
+    	if ( not (recv.find("BROADCAST")) and ( not (recv.find("SendToServer")))):
         	recv = conn.recv(2048)
         	millis = int(round(time.time() * 1000))
         	newFile = open(str(millis) + ".csv", "w")

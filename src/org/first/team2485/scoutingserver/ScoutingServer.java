@@ -31,11 +31,26 @@ public class ScoutingServer {
 		}
 
 		byte[] ignoreTag = "IGNORE".getBytes();
+		
+		
+		try {
+			System.out.println(pythonServer.isAlive());
+			Thread.sleep(20);
+			System.out.println(pythonServer.isAlive());
+			Thread.sleep(20);
+			System.out.println(pythonServer.isAlive());
+			Thread.sleep(20);
+			System.out.println(pythonServer.isAlive());
+			Thread.sleep(20);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		while (pythonServer.isAlive()) {
 			
 			try {
-				if (pythonServer.getInputStream().read() != -1) {
+				if (pythonServer.getInputStream().read() != -1 || pythonServer.getErrorStream().read() != -1) {
 					pythonServer.getOutputStream().write(ignoreTag);
 				}
 			} catch (IOException e) {

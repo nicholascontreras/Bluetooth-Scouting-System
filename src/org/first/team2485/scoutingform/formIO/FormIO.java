@@ -161,11 +161,24 @@ public class FormIO {
 			version = version.substring(version.indexOf(".") + 1);
 		}
 
+		while (true) {
 		
+			try {
+			
+				cmd("pip install pybluez", true);
 		
-		cmd("pip install pybluez", true);
-
-		cmd("pip install --upgrade pybluez", true);
+				cmd("pip install --upgrade pybluez", true);
+				
+				break;
+				
+			} catch (Exception e) {
+				JTextArea message = new JTextArea(
+						"You do not have pip, download it here:   \nhttps://pip.pypa.io/en/stable/installing/");
+				message.setEditable(false);
+				JOptionPane.showMessageDialog(null, message);
+			}
+			
+		}
 
 		return true;
 	}
