@@ -51,6 +51,8 @@ while True:
 
     if consoleInput.find("BROADCAST") != -1:
         sock.send(consoleInput)
+    else if consoleInput.find("SendToServer") !=-1:
+    	sock.send(consoleInput)
     else 
         file = open("unsentData/scoutingData.csv", "r")
         data = file.read()
