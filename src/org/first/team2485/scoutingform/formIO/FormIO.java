@@ -111,10 +111,10 @@ public class FormIO {
 	private boolean setupPythonWindows() {
 
 		Process pyVersion;
-
+		
 		while (true) {
 
-			pyVersion = cmd("python -V", true);
+			pyVersion = cmd("py -V", true);
 
 			if (pyVersion != null) {
 				break;
@@ -127,8 +127,13 @@ public class FormIO {
 			message.setEditable(false);
 			JOptionPane.showMessageDialog(null, message);
 		}
-
+		
 		String versionResult = convertStreamToString(pyVersion.getInputStream());
+		
+		if ( versionResult.equals("")) {
+			versionResult = convertStreamToString(pyVersion.getErrorStream());
+		}
+		
 		System.out.println("Python check: " + versionResult);
 
 		String version = versionResult.substring(versionResult.indexOf(" ") + 1);
@@ -149,13 +154,15 @@ public class FormIO {
 			}
 
 			if (Integer.parseInt(version.charAt(0) + "") > minVersion[i]) {
-				System.out.println("Vastly ahead, breaking");
+				System.out.println("Vastly ahead, braking");
 				break;
 			}
 
 			version = version.substring(version.indexOf(".") + 1);
 		}
 
+		
+		
 		cmd("pip install pybluez", true);
 
 		cmd("pip install --upgrade pybluez", true);
