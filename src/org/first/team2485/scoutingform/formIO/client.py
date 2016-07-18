@@ -19,6 +19,9 @@ if len(service_matches) == 0:
     print("Could not find Server")
     sys.exit(1)
 
+port
+name
+host
 
 for x in xrange(0, len(service_matches)):
 
