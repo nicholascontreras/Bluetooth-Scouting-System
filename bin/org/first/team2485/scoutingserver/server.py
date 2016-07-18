@@ -27,10 +27,10 @@ while True:
 	try:
       		client_sock, client_info = server_sock.accept()
       		client_sock.setblocking(False)
-		print("connection:")
-		print(str(client_sock))
-		connectedSockets.append(client_sock)
-  	except Exception:
+      		print("connection:")
+      		print(str(client_sock))
+      		connectedSockets.append(client_sock)
+	except Exception:
     		print("no incoming connections")
 
 	consoleInput = input("I")
@@ -42,11 +42,11 @@ while True:
 	if len(queuedBroadcasts) > 0:
 	    	broadcastToSend = queuedBroadcasts[0]
 	    	queuedBroadcasts.remove(broadcastToSend)
-
-	  	for curSocket in connectedSockets:
+	    	for curSocket in connectedSockets:
 	    		try:
 	        			ready_to_read, ready_to_write, in_error = select.select([curSocket], [curSocket], [curSocket], 1)
-	        		except select.error: # connection error event here, maybe reconnect
+	        		except select.error: 
+	        			# connection error event here, maybe reconnect
 	        			conn.shutdown(2)    # 0 = done receiving, 1 = done sending, 2 = both
 	        			conn.close()
 	        			connectedSockets.remove(curSocket)

@@ -41,18 +41,17 @@ except:
     	print ("failed to connect - Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, host))
     	sys.exit()
 
-t=Timer(10.0 receiveFromServer)
+t=Timer(10.0, receiveFromServer)
 t.start()
 
 while True:
 	consoleInput = input("I")
 	print("Input is: " + consoleInput)
-
 	if consoleInput.find("BROADCAST") != -1:
+		sock.send(consoleInput)
+	elif consoleInput.find("SendToServer") !=-1:
         		sock.send(consoleInput)
-    	elif consoleInput.find("SendToServer") !=-1:
-        		sock.send(consoleInput)
-    	else:
+	else:
         		file = open("unsentData/scoutingData.csv", "r")
         		data = file.read()
         		data.close()
@@ -68,15 +67,15 @@ while True:
 def receiveFromServer():
 	try:
         		ready_to_read, ready_to_write, in_error = select.select([sock], [sock], [sock], 1)
-        	except select.error:
+	except select.error:
         		print ("Error in Python 'Select'")
         		return
-    	if ready_to_read >0:
+	if ready_to_read >0:
         		recv = conn.recv(2048)
         		print (recv)
-    	if not (ready_to_read or ready_to_write or in_error):
-        		print "no server message" 
-   		t.start()
+	if not (ready_to_read or ready_to_write or in_error):
+		print ("no server message")
+		t.start()
 
 
 
