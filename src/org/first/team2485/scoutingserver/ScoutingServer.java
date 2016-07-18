@@ -31,21 +31,6 @@ public class ScoutingServer {
 		}
 
 		byte[] ignoreTag = "IGNORE".getBytes();
-		
-		
-		try {
-			System.out.println(pythonServer.isAlive());
-			Thread.sleep(20);
-			System.out.println(pythonServer.isAlive());
-			Thread.sleep(20);
-			System.out.println(pythonServer.isAlive());
-			Thread.sleep(20);
-			System.out.println(pythonServer.isAlive());
-			Thread.sleep(20);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
 		while (pythonServer.isAlive()) {
 			
