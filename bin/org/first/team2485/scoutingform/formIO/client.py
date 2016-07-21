@@ -8,20 +8,18 @@ if sys.version < '3':
     input = raw_input
 
 addr = None
-
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+print("Looking for scouting server...")
 
-print("Looking for scouting server....")
-
-service_matches = find_service( uuid = uuid, address = addr )
+service_matches = find_service(uuid = uuid, address = addr)
 
 if len(service_matches) == 0:
 	print("Could not find Server")
 	sys.exit(1)
 
-port
-name
-host
+port = 0
+name = 0
+host = 0
 
 for x in xrange(0, len(service_matches)):
 	match = service_matches[x]
@@ -37,6 +35,8 @@ print("Connecting to Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, hos
 sock=BluetoothSocket( RFCOMM )
 try:
 	sock.connect(host, port)
+	scoutName= input("GETNAME")
+	sock.send(scoutName)
 except:
     	print ("failed to connect - Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, host))
     	sys.exit()

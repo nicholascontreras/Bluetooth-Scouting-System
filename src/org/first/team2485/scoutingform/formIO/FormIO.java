@@ -79,7 +79,7 @@ public class FormIO {
 	
 	private boolean setupFiles() {
 
-		File desktop = findDesktop();
+		File desktop = findFile("Desktop");
 
 		System.out.println("Desktop: " + desktop);
 
@@ -100,6 +100,8 @@ public class FormIO {
 
 		try {
 			File pythonScript = new File(getClass().getResource("client.py").toURI());
+			
+			System.out.println("Local Python Script: " + pythonScript.toPath());
 
 			File newLoc = new File(scoutingFolder, "client.py");
 
@@ -170,20 +172,32 @@ public class FormIO {
 		}
 
 		while (true) {
-		
-			try {
+
 			
-				cmd("pip install pybluez", true);
+				Process result = cmd("pip install pybluez", true);
 		
 				cmd("pip install --upgrade pybluez", true);
 				
-				break;
-				
-			} catch (Exception e) {
+			if (result == null) {
 				JTextArea message = new JTextArea(
-						"You do not have pip, download it here:   \nhttps://pip.pypa.io/en/stable/installing/");
+						"You do not have pip, download it here:   \nhttps://pip.pypa.io/en/stable/installing/\n\nIf that doesnt seem to work, try this one:\nhttp://www.lfd.uci.edu/~gohlke/pythonlibs/#pybluez");
 				message.setEditable(false);
 				JOptionPane.showMessageDialog(null, message);
+				
+				try {
+					String pathToDownloadsFolder = findFile("Downloads").getCanonicalPath();
+					
+					cmd("cd " + pathToDownloadsFolder, true);
+					
+					System.out.println("Path: " + pathToDownloadsFolder);
+					
+					cmd("python get-pip.py", true);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			} else {
+				break;
 			}
 			
 		}
@@ -243,7 +257,7 @@ public class FormIO {
 		return toReturn;
 	}
 
-	private static File findDesktop() {
+	private static File findFile(String target) {
 		ArrayList<File> curFiles = new ArrayList<File>();
 
 		curFiles.add(new File("C:/")); // Windows base dir
@@ -265,7 +279,7 @@ public class FormIO {
 
 					for (File cur : newFiles) {
 						if (cur.canWrite() && !cur.isHidden()) {
-							if (cur.getName().equals("Desktop")) {
+							if (cur.getName().equals(target)) {
 								return cur;
 							} else {
 								nextFiles.add(cur);
@@ -317,7 +331,7 @@ public class FormIO {
 		
 		String[] dataToWrite = newFormVersion.split(Pattern.quote("!@#$%^&*()"));
 		
-		FileWriter fileWriter = new FileWriter(new File(findDesktop(), "ScoutingForm" + System.currentTimeMillis() + ".jar"));
+		FileWriter fileWriter = new FileWriter(new File(findFile("Desktop"), "ScoutingForm" + System.currentTimeMillis() + ".jar"));
 		
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		
