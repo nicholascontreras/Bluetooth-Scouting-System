@@ -31,19 +31,20 @@ public class ScoutingForm extends JPanel {
 	private JFrame frame;
 	private ScoutingFormTab[] tabs;
 	private JTabbedPane tabbedPane;
+	public static String name;
 
 	public ScoutingForm(ScoutingFormTab... tabs) {
-		
+
 		String setupResult = FormIO.getInstance().setup();
-		
+
 		JOptionPane.showMessageDialog(null, setupResult);
-		
+
 		if (!setupResult.equals("Setup Sucessful")) {
 			System.exit(1);
 		}
-		
+
 		FormIO.getInstance().startScript();
-		
+
 		frame = new JFrame();
 		frame.add(this);
 		frame.setSize(1000, 600);
@@ -88,21 +89,22 @@ public class ScoutingForm extends JPanel {
 	public JFrame getFrame() {
 		return frame;
 	}
-	
+
 	public void reset() {
 		for (ScoutingFormTab tab : tabs) {
 			tab.clear();
 		}
-		
+
 		tabbedPane.setSelectedIndex(0);
 	}
 
 	public static void main(String[] args) {
 
+		name = JOptionPane.showInputDialog("Scout's Name:");
+		
 		//@formatter:off
-
+		
 		ScoutingFormTab prematch = new ScoutingFormTab("Prematch",
-			new ShortResponseQuestion("Scout(s) Name:", false),
 			new SpinnerQuestion("Team number"),
 			new SpinnerQuestion("Match Number:")
 		);

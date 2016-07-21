@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+import org.first.team2485.scoutingform.ScoutingForm;
+
 public class FormIO {
 
 	private static FormIO instance;
@@ -66,9 +68,15 @@ public class FormIO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		if (convertStreamToString(pythonProcess.getInputStream()).equals("GETNAME")){
+			try {
+				pythonProcess.getOutputStream().write(ScoutingForm.name.getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
-
+	
 	private boolean setupFiles() {
 
 		File desktop = findDesktop();

@@ -37,6 +37,8 @@ print("Connecting to Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, hos
 sock=BluetoothSocket( RFCOMM )
 try:
 	sock.connect(host, port)
+	scoutName= input("GETNAME")
+	sock.send(scoutName)
 except:
     	print ("failed to connect - Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, host))
     	sys.exit()
