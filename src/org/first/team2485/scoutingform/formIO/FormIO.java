@@ -25,25 +25,26 @@ import org.first.team2485.scoutingform.ScoutingForm;
 public class FormIO {
 
 	private static FormIO instance;
-	
-	private File savePath;
-	private File scriptPath;
-	
-	private Process pythonProcess;
-	
+
+	private File savePath; // save scouting data to - for python
+	private File scriptPath; // location of python script to run
+
+	private Process pythonProcess; // the process of the python script
+									// processing
+
 	private static boolean isMac; // gets set in findDesktop
-	
-	public static FormIO getInstance() {
+
+	public static FormIO getInstance() { // only allow one instance
 		if (instance == null) {
 			instance = new FormIO();
 		}
 		return instance;
 	}
-	
+
 	public Process getProcess() {
 		return pythonProcess;
 	}
-	
+
 	public String setup() {
 
 		if (!setupFiles()) {
@@ -56,19 +57,19 @@ public class FormIO {
 
 		return "Setup Sucessful";
 	}
-	
+
 	public void startScript() {
-		
+
 		if (pythonProcess != null) {
 			pythonProcess.destroyForcibly();
 		}
-		
+
 		try {
 			pythonProcess = cmd("py " + scriptPath.getCanonicalPath(), false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (convertStreamToString(pythonProcess.getInputStream()).equals("GETNAME")){
+		if (convertStreamToString(pythonProcess.getInputStream()).equals("GETNAME")) {
 			try {
 				pythonProcess.getOutputStream().write(ScoutingForm.name.getBytes());
 			} catch (IOException e) {
@@ -76,7 +77,7 @@ public class FormIO {
 			}
 		}
 	}
-	
+
 	private boolean setupFiles() {
 
 		File desktop = findFile("Desktop");
@@ -100,7 +101,7 @@ public class FormIO {
 
 		try {
 			File pythonScript = new File(getClass().getResource("client.py").toURI());
-			
+
 			System.out.println("Local Python Script: " + pythonScript.toPath());
 
 			File newLoc = new File(scoutingFolder, "client.py");
@@ -121,7 +122,7 @@ public class FormIO {
 	private boolean setupPythonWindows() {
 
 		Process pyVersion;
-		
+
 		while (true) {
 
 			pyVersion = cmd("py -V", true);
@@ -137,13 +138,13 @@ public class FormIO {
 			message.setEditable(false);
 			JOptionPane.showMessageDialog(null, message);
 		}
-		
+
 		String versionResult = convertStreamToString(pyVersion.getInputStream());
-		
-		if ( versionResult.equals("")) {
+
+		if (versionResult.equals("")) {
 			versionResult = convertStreamToString(pyVersion.getErrorStream());
 		}
-		
+
 		System.out.println("Python check: " + versionResult);
 
 		String version = versionResult.substring(versionResult.indexOf(" ") + 1);
@@ -173,33 +174,32 @@ public class FormIO {
 
 		while (true) {
 
-			
-				Process result = cmd("pip install pybluez", true);
-		
-				cmd("pip install --upgrade pybluez", true);
-				
+			Process result = cmd("pip install pybluez", true);
+
+			cmd("pip install --upgrade pybluez", true);
+
 			if (result == null) {
 				JTextArea message = new JTextArea(
 						"You do not have pip, download it here:   \nhttps://pip.pypa.io/en/stable/installing/\n\nIf that doesnt seem to work, try this one:\nhttp://www.lfd.uci.edu/~gohlke/pythonlibs/#pybluez");
 				message.setEditable(false);
 				JOptionPane.showMessageDialog(null, message);
-				
+
 				try {
 					String pathToDownloadsFolder = findFile("Downloads").getCanonicalPath();
-					
+
 					cmd("cd " + pathToDownloadsFolder, true);
-					
+
 					System.out.println("Path: " + pathToDownloadsFolder);
-					
+
 					cmd("python get-pip.py", true);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 			} else {
 				break;
 			}
-			
+
 		}
 
 		return true;
@@ -207,7 +207,7 @@ public class FormIO {
 
 	private boolean testPythonMac() {
 		try {
-			Process p = Runtime.getRuntime().exec(new String[] {"ls",  "/Library/Python/2.7/site-packages/"});
+			Process p = Runtime.getRuntime().exec(new String[] { "ls", "/Library/Python/2.7/site-packages/" });
 			p.waitFor();
 			String s = convertStreamToString(p.getInputStream());
 			return s.matches("[\\S\\s]+lightblue.+egg[\\S\\s]+");
@@ -225,7 +225,7 @@ public class FormIO {
 			command += "git clone https://github.com/jmcculloch2018/lightblue-0.4.git;";
 			command += "cd lightblue*;";
 			command += "sudo python setup.py install;";
-			String args[] = { "osascript",  "-e",  "tell application \"Terminal\" to do script \"" + command +  "\"" };
+			String args[] = { "osascript", "-e", "tell application \"Terminal\" to do script \"" + command + "\"" };
 			try {
 				Runtime.getRuntime().exec(args);
 			} catch (IOException e) {
@@ -293,9 +293,9 @@ public class FormIO {
 		return null;
 	}
 
-	public String saveAndSendData(String data, boolean saveFirst, boolean forceWrite) {
-
-		if (saveFirst) {
+	public String saveData(String data, boolean forceWrite) { // method
+																					// messy,
+																					// fix
 
 			File file = new File(savePath, "scoutingData.csv");
 
@@ -316,30 +316,41 @@ public class FormIO {
 				e.printStackTrace();
 				return "Failed to write scouting data to file";
 			}
-		}
+			return "success";
+		
+	}
+
+	public String sendData() {
 
 		try {
-			pythonProcess.getOutputStream().write(1);
+			pythonProcess.getOutputStream().write(1); // find new key - not one
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "An error occurred sending the data";
 		}
-		return "Sent data sucessfully";
+		if (convertStreamToString(pythonProcess.getInputStream()).equals("Scouting Data Received")){
+				return "Sent data sucessfully";
+		}
+		else{
+			return "An error occurred sending the data";
+		}
+
 	}
-	
+
 	public static void saveFormVersion(String newFormVersion) throws IOException {
-		
+
 		String[] dataToWrite = newFormVersion.split(Pattern.quote("!@#$%^&*()"));
-		
-		FileWriter fileWriter = new FileWriter(new File(findFile("Desktop"), "ScoutingForm" + System.currentTimeMillis() + ".jar"));
-		
+
+		FileWriter fileWriter = new FileWriter(
+				new File(findFile("Desktop"), "ScoutingForm" + System.currentTimeMillis() + ".jar"));
+
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		
+
 		for (String s : dataToWrite) {
 			bufferedWriter.write(s);
 			bufferedWriter.newLine();
 		}
-		
+
 		bufferedWriter.close();
 	}
 }

@@ -32,8 +32,8 @@ public class SubmitButton extends JButton implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String dataToSend = form.submit();
-		
-		String result = FormIO.getInstance().saveAndSendData(dataToSend, true, false);
+		FormIO.getInstance().saveData(dataToSend, false);
+		String result = FormIO.getInstance().sendData();
 
 		if (result.equals("Unsent data already exists")) {
 			int sendFirst = JOptionPane.showConfirmDialog(null, result + "\nDo you want to send it first?", "Warning",
@@ -41,14 +41,16 @@ public class SubmitButton extends JButton implements ActionListener {
 			System.out.println(sendFirst);
 
 			if (sendFirst == JOptionPane.YES_OPTION) {
-				result = FormIO.getInstance().saveAndSendData(null, false, false);
+				FormIO.getInstance().saveData(null, false);
+				result = FormIO.getInstance().sendData();
 				
 				if (!result.equals("Sucessfuly sent scouting data")) {
 					JOptionPane.showMessageDialog(null, result + " (while sending old data)");
 					return;
 				}
 			}
-			result = FormIO.getInstance().saveAndSendData(dataToSend, true, true);
+			FormIO.getInstance().saveData(dataToSend, true);
+			result = FormIO.getInstance().sendData();
 		}
 
 		JOptionPane.showMessageDialog(null, result);
