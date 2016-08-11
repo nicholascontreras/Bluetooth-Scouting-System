@@ -1,8 +1,6 @@
 from bluetooth import *
 import time
 import select
-import Tkinter
-import tkMessageBox
 
 
 if sys.version < '3':
@@ -25,16 +23,16 @@ print("Waiting for connections on RFCOMM channel: " + str(port))
 
 while True:
 	try:
-      		client_sock, client_info = server_sock.accept()
+		client_sock, client_info = server_sock.accept()
 		ready_to_read, ready_to_write, in_error = \
-           			select.select([client_sock,], [client_sock,], [], 1)
-           		if ready_to_read >0:
-           			name = conn.recv(2048)
-      		client_sock.setblocking(False)
-      		print("connection:")
-      		print(str(client_sock))
-      		connectedSocketNames.append(name)
-      		connectedSockets.append(client_sock)
+		select.select([client_sock,], [client_sock,], [], 1)
+		if ready_to_read >0:
+			name = conn.recv(2048)
+		client_sock.setblocking(False)
+		print("connection:")
+		print(str(client_sock))
+		connectedSocketNames.append(name)
+		connectedSockets.append(client_sock)
 
 	except Exception:
     		print("no incoming connections")
@@ -46,7 +44,7 @@ while True:
 	broadcastToSend = "IGNORE"
 	counter=0
 	if len(queuedBroadcasts) > 0:
-		counter++
+		counter += 1
 		broadcastToSend = queuedBroadcasts[0]
 		queuedBroadcasts.remove(broadcastToSend)
 		for curSocket in connectedSockets:
