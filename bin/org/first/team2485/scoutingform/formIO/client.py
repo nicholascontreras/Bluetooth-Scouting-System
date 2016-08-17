@@ -62,6 +62,7 @@ while True:
         		newFile = open(str(millis) + ".csv", "w")
         		newFile.write(data)
         		newFile.close()
+        		print ("Scouting Data Received")
 
 
 def receiveFromServer():

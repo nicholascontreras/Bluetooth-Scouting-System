@@ -210,7 +210,7 @@ public class FormIO {
 			Process p = Runtime.getRuntime().exec(new String[] { "ls", "/Library/Python/2.7/site-packages/" });
 			p.waitFor();
 			String s = convertStreamToString(p.getInputStream());
-			return s.matches("[\\S\\s]+lightblue.+egg[\\S\\s]+");
+			return s.matches("PyBluez.+egg[\\S\\s]+");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -221,9 +221,14 @@ public class FormIO {
 
 	private boolean setupPythonMac() {
 		while (!testPythonMac()) {
-			String command = "cd ~/Downloads;";
-			command += "git clone https://github.com/jmcculloch2018/lightblue-0.4.git;";
-			command += "cd lightblue*;";
+			String command = "";
+			command += "/usr/bin/ruby -e \\\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)\\\";";
+			command += "/usr/bin/ruby -e \\\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\\\";";
+			command += "brew install git;";
+			command += "brew link git;";
+			command += "cd ~/Downloads;";
+			command += "git clone https://github.com/karulis/pybluez.git;";
+			command += "cd pyblue*;";
 			command += "sudo python setup.py install;";
 			String args[] = { "osascript", "-e", "tell application \"Terminal\" to do script \"" + command + "\"" };
 			try {
