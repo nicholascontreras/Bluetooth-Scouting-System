@@ -1,6 +1,7 @@
 package org.first.team2485.scoutingserver;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,8 +9,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -17,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.JTextComponent;
@@ -30,6 +35,10 @@ public class ScoutingServer extends JFrame {
 	private Process pythonServer = null;
 	
 	private boolean isScriptRunning = false;
+		
+	private JTabbedPane tabbedPane;
+	
+	private JFrame myself;
 	
 
 	public static void main(String[] args) {
@@ -37,6 +46,8 @@ public class ScoutingServer extends JFrame {
 	}
 
 	private ScoutingServer() {
+		
+		this.myself = this;
 
 		JPanel lowerPane = new JPanel();
 		
@@ -77,22 +88,58 @@ public class ScoutingServer extends JFrame {
 					}
 				}
 				
+			}
+		});
+		
+		JButton deployJARButton = new JButton("Deploy Version");
+		
+		deployJARButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
 				
+				chooser.showOpenDialog(myself);
+				
+				File file = chooser.getSelectedFile();
+				
+				System.out.println("Selected JAR: " + file.getName());
+				
+				//TODO: Add functionality to send
 				
 			}
 		});
+		
+		JButton addChatButton = new JButton("New Chat");
+		
+		addChatButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				String clientName = JOptionPane.showInputDialog(myself, "Client Name");
+				
+				DMTab newTab = new DMTab(clientName, pythonServer);
+				
+			}
+		});
+		
+		
 		
 		lowerPane.add(scriptButton, BorderLayout.NORTH);
 		lowerPane.add(scriptDirButton, BorderLayout.NORTH);
 		lowerPane.add(dataDirButton, BorderLayout.NORTH);
 		lowerPane.add(uploadButton, BorderLayout.NORTH);
 		lowerPane.add(quit, BorderLayout.NORTH);
+		lowerPane.add(deployJARButton, BorderLayout.NORTH);
+		
+		this.tabbedPane = new JTabbedPane();
+		
+		JPanel mainPage = new JPanel();
 		
 		
-		this.add(lowerPane);
 		
-		
-		
+		this.add(lowerPane, BorderLayout.SOUTH);
 		
 		this.pack();
 		
@@ -142,5 +189,12 @@ public class ScoutingServer extends JFrame {
 
 		System.out.println(data);
 		return data;
+	}
+	
+	private static String convertStreamToString(InputStream is) {
+		Scanner s = new Scanner(is).useDelimiter("\\A");
+		String toReturn = s.hasNext() ? s.next() : "";
+		s.close();
+		return toReturn;
 	}
 }
