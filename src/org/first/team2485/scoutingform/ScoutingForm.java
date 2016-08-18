@@ -35,14 +35,6 @@ public class ScoutingForm extends JPanel {
 
 	public ScoutingForm(ScoutingFormTab... tabs) {
 
-		String setupResult = FormIO.getInstance().setup();
-
-		JOptionPane.showMessageDialog(null, setupResult);
-
-		if (!setupResult.equals("Setup Sucessful")) {
-			System.exit(1);
-		}
-
 		FormIO.getInstance().startScript();
 
 		frame = new JFrame();

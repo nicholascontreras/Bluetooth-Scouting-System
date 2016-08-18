@@ -29,9 +29,7 @@ public class SpinnerQuestion extends Question{
 	}
 	
 	public String getData() {
-		
 		return (int) spinner.getValue() + ",";
-		
 	}
 	
 	public void clear() {

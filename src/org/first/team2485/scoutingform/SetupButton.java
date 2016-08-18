@@ -14,7 +14,7 @@ import org.first.team2485.scoutingform.formIO.FormIO;
 public class SetupButton extends JButton implements ActionListener {
 
 	private ScoutingForm form;
-	
+
 	private SetupButton me;
 
 	public SetupButton(ScoutingForm form) {
@@ -23,15 +23,15 @@ public class SetupButton extends JButton implements ActionListener {
 
 		this.form = form;
 		this.addActionListener(this);
-		
+
 		me = this;
-		
+
 		new Timer(false).schedule(new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				Process p = FormIO.getInstance().getProcess();
-				
+
 				if (p != null) {
 					if (p.isAlive()) {
 						me.setText("Bluetooth Working");
@@ -41,12 +41,17 @@ public class SetupButton extends JButton implements ActionListener {
 					} else {
 						me.setText("RESTART BLUETOOTH");
 						me.setEnabled(true);
-						me.setBackground(Color.ORANGE);
-						me.setToolTipText("The Scouting Server Could Not Be Found. Click To Try Again");
+
+						if ((System.currentTimeMillis() / 500) % 2 == 0) {
+							me.setBackground(Color.ORANGE);
+						} else {
+							me.setBackground(Color.RED);
+						}
+						me.setToolTipText("The Underlying Bluetooth System has Crashed. Click To Try Again");
 					}
 				}
 			}
-		}, 0, 1000);
+		}, 0, 100);
 
 	}
 

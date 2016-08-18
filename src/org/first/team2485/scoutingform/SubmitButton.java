@@ -12,7 +12,7 @@ import org.first.team2485.scoutingform.formIO.FormIO;
 /**
  * 
  * @author Jeremy McCulloch
- *
+ * @author Nicholas Contreras
  */
 @SuppressWarnings("serial")
 public class SubmitButton extends JButton implements ActionListener {
@@ -32,33 +32,85 @@ public class SubmitButton extends JButton implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String dataToSend = form.submit();
-		FormIO.getInstance().saveData(dataToSend, false);
-		String result = FormIO.getInstance().sendData();
+		String result = FormIO.getInstance().saveData(dataToSend, false);
 
-		if (result.equals("Unsent data already exists")) {
-			int sendFirst = JOptionPane.showConfirmDialog(null, result + "\nDo you want to send it first?", "Warning",
-					JOptionPane.YES_NO_OPTION);
-			System.out.println(sendFirst);
+		boolean resetForm = false;
 
-			if (sendFirst == JOptionPane.YES_OPTION) {
-				FormIO.getInstance().saveData(null, false);
-				result = FormIO.getInstance().sendData();
-				
-				if (!result.equals("Sucessfuly sent scouting data")) {
-					JOptionPane.showMessageDialog(null, result + " (while sending old data)");
-					return;
-				}
-			}
-			FormIO.getInstance().saveData(dataToSend, true);
+		if (result.equals("Successfully saved the scouting data")) {
+
 			result = FormIO.getInstance().sendData();
+
+			JOptionPane.showMessageDialog(null, result);
+
+			if (result.equals("Sucessfully sent scouting data")) {
+				resetForm = true;
+			}
+		} else if (result.equals("Unsent data already exists")) {
+
+			int input = JOptionPane.showConfirmDialog(null, "Unsent data already exists\nDo you want to send it first?",
+					"Warning", JOptionPane.YES_NO_OPTION);
+
+			if (input == JOptionPane.YES_OPTION) {
+
+				result = FormIO.getInstance().sendData();
+
+				JOptionPane.showMessageDialog(null, "When sending old data...\n" + result);
+
+				if (!result.equals("Sucessfully sent scouting data")) {
+
+					input = JOptionPane.showConfirmDialog(null,
+							"The old data did not send sucessfully\nDo want to overwrite it with (and send) the new data?",
+							"Warning", JOptionPane.YES_NO_OPTION);
+
+					if (input == JOptionPane.YES_OPTION) {
+
+						result = FormIO.getInstance().saveData(dataToSend, true);
+
+						if (!result.equals("Successfully saved the scouting data")) {
+							JOptionPane.showMessageDialog(null, result);
+						} else {
+							result = FormIO.getInstance().sendData();
+
+							JOptionPane.showMessageDialog(null, result);
+
+							if (result.equals("Sucessfully sent scouting data")) {
+								resetForm = true;
+							}
+						}
+					}
+				} else {
+					result = FormIO.getInstance().saveData(dataToSend, false);
+
+					if (!result.equals("Successfully saved the scouting data")) {
+						JOptionPane.showMessageDialog(null, result);
+					} else {
+						result = FormIO.getInstance().sendData();
+
+						JOptionPane.showMessageDialog(null, result);
+
+						if (result.equals("Sucessfully sent scouting data")) {
+							resetForm = true;
+						}
+					}
+				}
+			} else {
+				result = FormIO.getInstance().saveData(dataToSend, true);
+
+				if (!result.equals("Successfully saved the scouting data")) {
+					JOptionPane.showMessageDialog(null, result);
+				} else {
+					result = FormIO.getInstance().sendData();
+
+					JOptionPane.showMessageDialog(null, result);
+				}
+
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, result);
 		}
 
-		JOptionPane.showMessageDialog(null, result);
-
-		if (!result.equals("Sucessfuly sent scouting data")) {
-			return;
+		if (resetForm) {
+			form.reset();
 		}
-
-		form.reset();
 	}
 }
