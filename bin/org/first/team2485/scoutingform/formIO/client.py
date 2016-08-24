@@ -1,8 +1,30 @@
 from bluetooth import *
 import sys
 import time
-import threading
+from threading import *
 import select
+
+
+t = None
+
+def receiveFromServer():
+	try:
+        		ready_to_read, ready_to_write, in_error = select.select([sock], [], [sock])
+        		print(ready_to_read)
+        		print(ready_to_write)
+        		print(in_error)
+	except select.error:
+        		print ("Error in Python 'Select'")
+        		return
+	if len(ready_to_read) > 0:
+        		recv = sock.recv(2048)
+        		print (recv)
+	if not (ready_to_read[0] or ready_to_write[0] or in_error[0]):
+		print ("no server message")	
+
+	print("starting new timer")
+	t = Timer(2.0, receiveFromServer)
+	t.start()
 
 if sys.version < '3':
     input = raw_input
@@ -21,7 +43,7 @@ port = 0
 name = 0
 host = 0
 
-for x in xrange(0, len(service_matches)):
+for x in range(0, len(service_matches)):
 	match = service_matches[x]
 	port = match["port"]
 	name = match["name"]
@@ -34,18 +56,24 @@ print("Connecting to Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, hos
 
 sock=BluetoothSocket( RFCOMM )
 try:
-	sock.connect(host, port)
+	sock.connect((host, port))
+	print("Connect")
 	scoutName= input("GETNAME")
+	print("Scout name received")
 	sock.send(scoutName)
-except:
+except TypeError as err:
     	print ("failed to connect - Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, host))
+    	print ("Error: ", err)
     	sys.exit()
 
-t=Timer(10.0, receiveFromServer)
+t = Timer(10.0, receiveFromServer)
 t.start()
 
 while True:
 	consoleInput = input("I")
+	while (consoleInput.find("^") != -1):
+		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]
+	consoleInput = consoleInput + "^"
 	print("Input is: " + consoleInput)
 	if consoleInput.find("BROADCAST") != -1:
 		sock.send(consoleInput)
@@ -54,7 +82,7 @@ while True:
 	else:
         		file = open("unsentData/scoutingData.csv", "r")
         		data = file.read()
-        		data.close()
+        		file.close()
         		print("Sending: " + data)
         		sock.send(data)
         		print("Sent")
@@ -64,19 +92,6 @@ while True:
         		newFile.close()
         		print ("Scouting Data Received")
 
-
-def receiveFromServer():
-	try:
-        		ready_to_read, ready_to_write, in_error = select.select([sock], [sock], [sock], 1)
-	except select.error:
-        		print ("Error in Python 'Select'")
-        		return
-	if ready_to_read >0:
-        		recv = conn.recv(2048)
-        		print (recv)
-	if not (ready_to_read or ready_to_write or in_error):
-		print ("no server message")
-		t.start()
 
 
 

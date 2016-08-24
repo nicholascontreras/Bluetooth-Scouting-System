@@ -71,6 +71,9 @@ t.start()
 
 while True:
 	consoleInput = input("I")
+	while (consoleInput.find("^") != -1):
+		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]
+	consoleInput = consoleInput + "^"
 	print("Input is: " + consoleInput)
 	if consoleInput.find("BROADCAST") != -1:
 		sock.send(consoleInput)

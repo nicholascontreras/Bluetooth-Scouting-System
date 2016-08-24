@@ -1,8 +1,6 @@
 from bluetooth import *
 import time
 import select
-import Tkinter
-import tkMessageBox
 
 
 if sys.version < '3':
@@ -25,55 +23,76 @@ print("Waiting for connections on RFCOMM channel: " + str(port))
 
 while True:
 	try:
-      		client_sock, client_info = server_sock.accept()
+		client_sock, client_info = server_sock.accept()
+		print("accept")
 		ready_to_read, ready_to_write, in_error = \
-           			select.select([client_sock,], [client_sock,], [], 1)
-           		if ready_to_read >0:
-           			name = conn.recv(2048)
-      		client_sock.setblocking(False)
-      		print("connection:")
-      		print(str(client_sock))
-      		connectedSocketNames.append(name)
-      		connectedSockets.append(client_sock)
+		select.select([client_sock], [], [], 15)
+		print("select")
+		name = client_sock.recv(2048)
+		print("read: " + name)
+		client_sock.setblocking(False)
+		print(str(client_sock))
+		connectedSocketNames.append(name)
+		connectedSockets.append(client_sock)
+		print("Socket added")
 
-	except Exception:
-    		print("no incoming connections")
+	except Exception as err:
+    		print("no incoming connections", err)
 
 	consoleInput = input("I")
+	while (consoleInput.find("^") != -1):
+		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]
+	consoleInput = consoleInput + "^"
 	print("Input is: " + consoleInput)
 	queuedBroadcasts.append(consoleInput)
 
 	broadcastToSend = "IGNORE"
 	counter=0
 	if len(queuedBroadcasts) > 0:
-		counter++
 		broadcastToSend = queuedBroadcasts[0]
 		queuedBroadcasts.remove(broadcastToSend)
-		for curSocket in connectedSockets:
+		while (counter < len(connectedSockets) ):
+			
+			curSocket = connectedSockets[counter]
 			try:
-				ready_to_read, ready_to_write, in_error = select.select([curSocket], [curSocket], [curSocket], 1)
+				ready_to_read, ready_to_write, in_error = select.select([curSocket], [curSocket], [curSocket], 10)
+				print("Select")
+				print(ready_to_read)
+				print(ready_to_write)
+				print(in_error)
 			except select.error: 
-				conn.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
-				conn.close()
+				curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
+				curSocket.close()
 				connectedSockets.remove(curSocket)
 				connectedSocketNames.remove(connectedSocketNames[counter])
 				print ("connection error")
 				continue
 			if len(ready_to_read) > 0:
-				if ( not (recv.find("BROADCAST")) and ( not (recv.find("SendToServer")))):
-					recv = conn.recv(2048)
+				recv = curSocket.recv(2048)
+				if (  recv.find("BROADCAST") is -1 and recv.find("SendToServer") is -1):
+					print ("Making file...")
 					millis = int(round(time.time() * 1000))
-					newFile = open(str(millis) + ".csv", "w")
+					newFile = open("C:/Users/Troy/Desktop/" + str(millis) + ".csv", "w")
 					newFile.write(recv)
 					newFile.close()
+					print ("Made File")
 				if recv.find("BROADCAST") != -1:
 		        			# do stuff with received data
 		        			queuedBroadcasts.append(recv)
 		        			print ("recieved: " + recv)
 				if recv.find("SendToServer") != -1:
-		        			recv = conn.recv(2048)
 		        			print ("received:" + recv)
 			if len(ready_to_write) > 0:
-	        			# connection for sending is valid, send the next item
-	        			if broadcastToSend != "IGNORE":
-	          				conn.send(broadcastToSend)
+	        	# connection for sending is valid, send the next item
+	        		if broadcastToSend != "IGNORE":
+	        				try:
+	          					curSocket.send(broadcastToSend)
+	          				except Exception:
+	          					print ("Connection disconnected for " + connectedSocketNames[counter])
+	          					#curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
+	          					curSocket.close()
+	          					connectedSockets.remove(curSocket)
+	          					connectedSocketNames.remove(connectedSocketNames[counter])
+	          					print ("Connection successfully disconnected")
+	          					continue
+			counter += 1
