@@ -18,7 +18,10 @@ def receiveFromServer():
         		return
 	if len(ready_to_read) > 0:
         		recv = sock.recv(2048)
-        		print (recv)
+        		msgs = recv.split("^")
+        		for msg in msgs:
+        			if (not(msg is "")
+        				print (recv)
 	if not (ready_to_read[0] or ready_to_write[0] or in_error[0]):
 		print ("no server message")	
 
@@ -91,6 +94,7 @@ while True:
         		data = file.read()
         		file.close()
         		print("Sending: " + data)
+        		data = data + "^"
         		sock.send(data)
         		print("Sent")
         		millis = int(round(time.time() * 1000))

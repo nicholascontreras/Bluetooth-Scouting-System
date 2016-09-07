@@ -96,7 +96,10 @@ while True:
 	        	# connection for sending is valid, send the next item
 	        		if broadcastToSend != "IGNORE":
 	        				try:
-	          					curSocket.send(broadcastToSend)
+	        					if ( broadcastToSend.find(connectedSocketNames[counter] is 0) )
+	        						curSocket.send(broadcastToSend)
+	        					elif (broadcastToSend.find("BROADCAST") is 0):
+	          						curSocket.send(broadcastToSend)
 	          				except Exception:
 	          					print ("Connection disconnected for " + connectedSocketNames[counter])
 	          					#curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both

@@ -48,7 +48,9 @@ while True:
 	
 	print("Input is: " + consoleInput)
 
-	consoleInput = consoleInput + "*Server" + consoleInput +"^"
+	if (not(consoleInput  is "")):
+		consoleInput = consoleInput + "*Server^"
+
 	queuedBroadcasts.append(consoleInput)
 
 	broadcastToSend = "IGNORE"
@@ -74,7 +76,9 @@ while True:
 			if len(ready_to_read) > 0:
 				recv = curSocket.recv(2048)
 				msgs = recv.split("^")
-				for msg in msgs
+				for msg in msgs:
+					if (msg is ""):
+						continue
 					if (  msg.find("BROADCAST") is -1 and msg.find("SendToServer") is -1):
 						print ("Making file...")
 						millis = int(round(time.time() * 1000))
@@ -92,7 +96,10 @@ while True:
 	        	# connection for sending is valid, send the next item
 	        		if broadcastToSend != "IGNORE":
 	        				try:
-	          					curSocket.send(broadcastToSend)
+	        					if ( broadcastToSend.find(connectedSocketNames[counter]) )
+	        						curSocket.send(broadcastToSend)
+	        					elif (broadcastToSend.find("BROADCAST") is 0):
+	          						curSocket.send(broadcastToSend)
 	          				except Exception:
 	          					print ("Connection disconnected for " + connectedSocketNames[counter])
 	          					#curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
