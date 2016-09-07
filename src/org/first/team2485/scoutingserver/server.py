@@ -48,7 +48,9 @@ while True:
 	
 	print("Input is: " + consoleInput)
 
-	consoleInput = consoleInput + "*Server^"
+	if (not(consoleInput  is "")):
+		consoleInput = consoleInput + "*Server^"
+
 	queuedBroadcasts.append(consoleInput)
 
 	broadcastToSend = "IGNORE"
@@ -74,8 +76,8 @@ while True:
 			if len(ready_to_read) > 0:
 				recv = curSocket.recv(2048)
 				msgs = recv.split("^")
-				for msg in msgs
-					if (ms is "")
+				for msg in msgs:
+					if (msg is ""):
 						continue
 					if (  msg.find("BROADCAST") is -1 and msg.find("SendToServer") is -1):
 						print ("Making file...")
