@@ -1,5 +1,7 @@
 package org.first.team2485.scoutingform;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;
@@ -38,8 +40,13 @@ public class ScoutingForm extends JPanel {
 		FormIO.getInstance().startScript();
 
 		frame = new JFrame();
-		frame.add(this);
-		frame.setSize(1000, 600);
+		JPanel wrapperPanel = new JPanel(new BorderLayout());
+		wrapperPanel.add(this, BorderLayout.CENTER);
+		this.setPreferredSize(new Dimension(600, 400));
+		wrapperPanel.add(new ChatWindows(), BorderLayout.LINE_END);
+		
+		frame.add(wrapperPanel);
+		
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
 		this.tabbedPane = new JTabbedPane();
