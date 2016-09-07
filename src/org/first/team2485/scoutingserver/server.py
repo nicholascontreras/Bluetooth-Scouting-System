@@ -42,8 +42,13 @@ while True:
 	consoleInput = input("I")
 	while (consoleInput.find("^") != -1):
 		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]
-	consoleInput = consoleInput + "^"
+
+	while (consoleInput.find("*") != -1):
+		consoleInput = consoleInput[:consoleInput.find("*")] + consoleInput[(consoleInput.find("*") + 1):]
+	
 	print("Input is: " + consoleInput)
+
+	consoleInput = consoleInput + "*Server" + consoleInput +"^"
 	queuedBroadcasts.append(consoleInput)
 
 	broadcastToSend = "IGNORE"
@@ -77,11 +82,11 @@ while True:
 						newFile.write(msg)
 						newFile.close()
 						print ("Made File")
-					if msg.find("BROADCAST") != -1:
+					if msg.find("BROADCAST") is 0:
 			        			# do stuff with received data
 			        			queuedBroadcasts.append(msg)
 			        			print ("recieved: " + msg)
-					if msg.find("SendToServer") != -1:
+					if msg.find("SendToServer") is 0:
 			        			print ("received:" + msg)
 			if len(ready_to_write) > 0:
 	        	# connection for sending is valid, send the next item

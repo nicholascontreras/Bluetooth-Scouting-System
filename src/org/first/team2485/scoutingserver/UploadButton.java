@@ -15,17 +15,19 @@ public class UploadButton extends JButton {
 	String scriptURL = "https://script.google.com/macros/s/AKfycbxOPJrgTvxLylo6DISWV5yGS4bnowYX-pKyUkle7fkm5Ktacfqs/exec";
 
 	ArrayList<String> filesDone = new ArrayList<String>();
+	
+	File file;
 
 	public UploadButton(DirectoryButton dataDirButton) {
 		super("Upload");
-		
-		File file = dataDirButton.getSelectedFile();
 
 		this.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				
+				file = dataDirButton.getSelectedFile();
 
 				File[] files = file.listFiles();
 				
@@ -34,7 +36,7 @@ public class UploadButton extends JButton {
 				ArrayList<String> headers = new ArrayList<String>();
 				ArrayList<String> params = new ArrayList<String>();
 				
-				int counter = 1;
+				int counter = 0;
 
 				for (int i = 0; i < files.length; i++) {
 
@@ -69,6 +71,7 @@ public class UploadButton extends JButton {
 						
 						br.close();
 						
+						filesProcessed.add(files[i].getName());
 						
 
 					} catch (Exception e1) {

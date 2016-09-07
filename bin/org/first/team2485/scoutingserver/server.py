@@ -61,7 +61,6 @@ while True:
 				print(ready_to_write)
 				print(in_error)
 			except select.error: 
-				curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
 				curSocket.close()
 				connectedSockets.remove(curSocket)
 				connectedSocketNames.remove(connectedSocketNames[counter])
@@ -69,19 +68,21 @@ while True:
 				continue
 			if len(ready_to_read) > 0:
 				recv = curSocket.recv(2048)
-				if (  recv.find("BROADCAST") is -1 and recv.find("SendToServer") is -1):
-					print ("Making file...")
-					millis = int(round(time.time() * 1000))
-					newFile = open("C:/Users/Troy/Desktop/" + str(millis) + ".csv", "w")
-					newFile.write(recv)
-					newFile.close()
-					print ("Made File")
-				if recv.find("BROADCAST") != -1:
-		        			# do stuff with received data
-		        			queuedBroadcasts.append(recv)
-		        			print ("recieved: " + recv)
-				if recv.find("SendToServer") != -1:
-		        			print ("received:" + recv)
+				msgs = recv.split("^")
+				for msg in msgs
+					if (  msg.find("BROADCAST") is -1 and msg.find("SendToServer") is -1):
+						print ("Making file...")
+						millis = int(round(time.time() * 1000))
+						newFile = open("C:/Users/Troy/Desktop/" + str(millis) + ".csv", "w")
+						newFile.write(msg)
+						newFile.close()
+						print ("Made File")
+					if msg.find("BROADCAST") != -1:
+			        			# do stuff with received data
+			        			queuedBroadcasts.append(msg)
+			        			print ("recieved: " + msg)
+					if msg.find("SendToServer") != -1:
+			        			print ("received:" + msg)
 			if len(ready_to_write) > 0:
 	        	# connection for sending is valid, send the next item
 	        		if broadcastToSend != "IGNORE":

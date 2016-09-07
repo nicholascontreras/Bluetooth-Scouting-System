@@ -27,6 +27,8 @@ public class DirectoryButton extends JButton{
 
 				JFileChooser chooser = new JFileChooser();
 				
+				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				
 				chooser.showOpenDialog(parent);
 				
 				file = chooser.getSelectedFile();

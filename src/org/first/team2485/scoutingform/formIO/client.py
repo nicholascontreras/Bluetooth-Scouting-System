@@ -73,12 +73,19 @@ while True:
 	consoleInput = input("I")
 	while (consoleInput.find("^") != -1):
 		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]
-	consoleInput = consoleInput + "^"
+	while (consoleInput.find("*") != -1):
+		consoleInput = consoleInput[:consoleInput.find("*")] + consoleInput[(consoleInput.find("*") + 1):]
+	
 	print("Input is: " + consoleInput)
-	if consoleInput.find("BROADCAST") != -1:
+	if consoleInput.find("BROADCAST") is 0:
+		consoleInput = consoleInput + "*" + scoutName
+		consoleInput = consoleInput + "^"
 		sock.send(consoleInput)
-	elif consoleInput.find("SendToServer") !=-1:
+	elif consoleInput.find("SendToServer") is 0:
+        		consoleInput = consoleInput + "*" + scoutName
+        		consoleInput = consoleInput + "^"
         		sock.send(consoleInput)
+
 	else:
         		file = open("unsentData/scoutingData.csv", "r")
         		data = file.read()
