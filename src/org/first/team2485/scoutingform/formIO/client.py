@@ -91,6 +91,7 @@ while True:
         		data = file.read()
         		file.close()
         		print("Sending: " + data)
+        		data = data + "^"
         		sock.send(data)
         		print("Sent")
         		millis = int(round(time.time() * 1000))

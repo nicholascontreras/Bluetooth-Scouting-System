@@ -48,7 +48,7 @@ while True:
 	
 	print("Input is: " + consoleInput)
 
-	consoleInput = consoleInput + "*Server" + consoleInput +"^"
+	consoleInput = consoleInput + "*Server^"
 	queuedBroadcasts.append(consoleInput)
 
 	broadcastToSend = "IGNORE"
@@ -75,6 +75,8 @@ while True:
 				recv = curSocket.recv(2048)
 				msgs = recv.split("^")
 				for msg in msgs
+					if (ms is "")
+						continue
 					if (  msg.find("BROADCAST") is -1 and msg.find("SendToServer") is -1):
 						print ("Making file...")
 						millis = int(round(time.time() * 1000))
