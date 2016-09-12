@@ -96,7 +96,7 @@ while True:
 	        	# connection for sending is valid, send the next item
 	        		if broadcastToSend != "IGNORE":
 	        				try:
-	        					if ( broadcastToSend.find(connectedSocketNames[counter] is 0) )
+	        					if ( broadcastToSend.find(connectedSocketNames[counter] is 0)): 
 	        						curSocket.send(broadcastToSend)
 	        					elif (broadcastToSend.find("BROADCAST") is 0):
 	          						curSocket.send(broadcastToSend)

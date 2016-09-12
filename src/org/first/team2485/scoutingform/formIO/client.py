@@ -20,7 +20,7 @@ def receiveFromServer():
         		recv = sock.recv(2048)
         		msgs = recv.split("^")
         		for msg in msgs:
-        			if (not(msg is "")
+        			if (not(msg is "")):
         				print (recv)
 	if not (ready_to_read[0] or ready_to_write[0] or in_error[0]):
 		print ("no server message")	
