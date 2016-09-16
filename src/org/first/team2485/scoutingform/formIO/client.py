@@ -18,7 +18,7 @@ def receiveFromServer():
         		return
 	if len(ready_to_read) > 0:
         		recv = sock.recv(2048)
-        		msgs = recv.split("^")
+        		msgs = recv.decode().split("^")
         		for msg in msgs:
         			if (not(msg is "")):
         				print (recv)
