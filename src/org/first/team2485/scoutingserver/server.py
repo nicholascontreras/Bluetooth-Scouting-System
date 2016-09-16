@@ -75,7 +75,7 @@ while True:
 				continue
 			if len(ready_to_read) > 0:
 				recv = curSocket.recv(2048)
-				msgs = recv.split("^")
+				msgs = recv.decode().split("^")
 				for msg in msgs:
 					if (msg is ""):
 						continue

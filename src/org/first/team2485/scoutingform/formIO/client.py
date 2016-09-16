@@ -97,9 +97,3 @@ while True:
         		newFile.write(data)
         		newFile.close()
         		print ("Scouting Data Received")
-
-
-
-
-
-
