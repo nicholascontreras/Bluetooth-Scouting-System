@@ -60,8 +60,8 @@ print("Connecting to Port: \"%s\" Name: \"%s\" Host: \"%s\" " % (port, name, hos
 sock=BluetoothSocket( RFCOMM )
 try:
 	sock.connect((host, port))
-	print("Connect")
-	scoutName= input("GETNAME")
+	print("SEND NAME")
+	scoutName = input("")
 	print("Scout name received")
 	sock.send(scoutName)
 except TypeError as err:
@@ -69,23 +69,18 @@ except TypeError as err:
     	print ("Error: ", err)
     	sys.exit()
 
-t = Timer(10.0, receiveFromServer)
+t = Timer(2.0, receiveFromServer)
 t.start()
 
 while True:
-	consoleInput = input("I")
+	consoleInput = input("")
 	while (consoleInput.find("^") != -1):
-		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]
-	while (consoleInput.find("*") != -1):
-		consoleInput = consoleInput[:consoleInput.find("*")] + consoleInput[(consoleInput.find("*") + 1):]
-	
+		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]	
 	print("Input is: " + consoleInput)
 	if consoleInput.find("BROADCAST") is 0:
-		consoleInput = consoleInput + "*" + scoutName
 		consoleInput = consoleInput + "^"
 		sock.send(consoleInput)
 	elif consoleInput.find("SendToServer") is 0:
-        		consoleInput = consoleInput + "*" + scoutName
         		consoleInput = consoleInput + "^"
         		sock.send(consoleInput)
 
