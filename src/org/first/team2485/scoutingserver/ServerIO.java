@@ -1,8 +1,12 @@
 package org.first.team2485.scoutingserver;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,6 +17,9 @@ public class ServerIO {
 	private static ServerIO instance;
 	
 	private Process pythonProcess;
+	
+	private BufferedWriter pythonInput;
+	private BufferedReader pythonOutput;
 
 	public static ServerIO getInstance() { // only allow one instance
 		if (instance == null) {
@@ -40,13 +47,8 @@ public class ServerIO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (convertStreamToString(pythonProcess.getInputStream()).equals("GETNAME")) {
-			try {
-				pythonProcess.getOutputStream().write(ScoutingForm.name.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		pythonInput = new BufferedWriter(new OutputStreamWriter(pythonProcess.getOutputStream()));
+		pythonOutput = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
 	}
 
 	private static Process cmd(String cmd, boolean block) {
@@ -61,12 +63,4 @@ public class ServerIO {
 		}
 		return null;
 	}
-
-	private static String convertStreamToString(InputStream is) {
-		Scanner s = new Scanner(is).useDelimiter("\\A");
-		String toReturn = s.hasNext() ? s.next() : "";
-		s.close();
-		return toReturn;
-	}
-
 }
