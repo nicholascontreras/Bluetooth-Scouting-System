@@ -11,10 +11,12 @@ import javax.swing.JLabel;
 @SuppressWarnings("serial")
 public class CheckboxQuestion extends Question {
 		
-	JLabel promptLabel;
-	JCheckBox[] checkboxes;
+	private JLabel promptLabel;
+	private JCheckBox[] checkboxes;
 	
-	public CheckboxQuestion(String prompt, String... options) {
+	private String internalName;
+	
+	public CheckboxQuestion(String prompt, String internalName, String... options) {
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
@@ -26,12 +28,14 @@ public class CheckboxQuestion extends Question {
 			checkboxes[i] = new JCheckBox(options[i]);		
 			this.add(checkboxes[i]);
 		}
+		
+		this.internalName = internalName;
 	}
 	
 	public String getData() {
 		String data = "";
 		for (int i = 0; i < checkboxes.length; i++) {
-			data += checkboxes[i].isSelected() ? "1," : "0,";
+			data += internalName + "=" + (checkboxes[i].isSelected() ? "1," : "0,");
 		}
 		return data;
 	}

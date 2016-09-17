@@ -12,13 +12,15 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class ShortResponseQuestion extends Question {
 		
-	JLabel promptLabel;
-	ButtonGroup optionButtonGroup;
-	JTextField textField;
+	private JLabel promptLabel;
+	private ButtonGroup optionButtonGroup;
+	private JTextField textField;
 	
-	boolean canClear;
+	private boolean canClear;
 	
-	public ShortResponseQuestion(String prompt, boolean canClear) {
+	private String internalName;
+	
+	public ShortResponseQuestion(String prompt, String internalName, boolean canClear) {
 		promptLabel = new JLabel(prompt);
 		this.add(promptLabel);
 		
@@ -26,10 +28,12 @@ public class ShortResponseQuestion extends Question {
 		this.add(textField);
 		
 		this.canClear = canClear;
+		
+		this.internalName = internalName;
 	}
 	
 	public String getData() {
-		return "\"" + textField.getText() + "\",";
+		return internalName + "=\"" + textField.getText() + "\",";
 	}
 	
 	

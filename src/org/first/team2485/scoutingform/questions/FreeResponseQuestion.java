@@ -11,23 +11,26 @@ import javax.swing.JTextArea;
 @SuppressWarnings("serial")
 public class FreeResponseQuestion extends Question {
 		
-	JLabel promptLabel;
-	ButtonGroup optionButtonGroup;
-	JTextArea area;
+	private JLabel promptLabel;
+	private ButtonGroup optionButtonGroup;
+	private JTextArea area;
 	
-	public FreeResponseQuestion(String prompt) {
+	private String internalName;
+	
+	public FreeResponseQuestion(String prompt, String internalName) {
 		promptLabel = new JLabel(prompt);
 		this.add(promptLabel);
 		
 		area = new JTextArea(5, 50);
 		this.add(area);
+		
+		this.internalName = internalName;
 	}
 	
 	public String getData() {
-		return "\"" + area.getText() + "\",";
+		return internalName + "=\"" + area.getText() + "\",";
 	}
 	public void clear() {
 		this.area.setText("");
 	}
-	
 }

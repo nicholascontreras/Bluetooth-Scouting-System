@@ -18,11 +18,13 @@ import org.jdesktop.swingx.JXCollapsiblePane;
 @SuppressWarnings("serial")
 public class QuestionGroup extends Question {
 	 
-	JXCollapsiblePane pane;
-	JCheckBox checkbox;
-	Question[] questions;
+	private JXCollapsiblePane pane;
+	private JCheckBox checkbox;
+	private Question[] questions;
 	
-	public QuestionGroup(String title, Question... questions) {
+	private String internalName;
+	
+	public QuestionGroup(String title, String internalName, Question... questions) {
 		
 		this.setLayout(new BorderLayout());
 		
@@ -44,12 +46,12 @@ public class QuestionGroup extends Question {
 		pane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.add(pane, BorderLayout.SOUTH);
 		this.questions = questions;
+		
+		this.internalName = internalName;
 	}
 	
 	public void update() {
-		
 		pane.setCollapsed(!checkbox.isSelected());
-		
 	}
 	
 	@Override

@@ -13,11 +13,13 @@ import javax.swing.JSpinner.DefaultEditor;
 @SuppressWarnings("serial")
 public class SpinnerQuestion extends Question{
 		
-	JLabel promptLabel;
-	ButtonGroup optionButtonGroup;
-	JSpinner spinner;
+	private JLabel promptLabel;
+	private ButtonGroup optionButtonGroup;
+	private JSpinner spinner;
 	
-	public SpinnerQuestion(String prompt) {
+	private String internalName;
+	
+	public SpinnerQuestion(String prompt, String internalName) {
 		
 		promptLabel = new JLabel(prompt);
 		this.add(promptLabel);
@@ -25,11 +27,13 @@ public class SpinnerQuestion extends Question{
 		spinner = new JSpinner(new SpinnerNumberModel());
 		((DefaultEditor) spinner.getEditor()).getTextField().setColumns(5);
 		this.add(spinner);
+		
+		this.internalName = internalName;
 	
 	}
 	
 	public String getData() {
-		return (int) spinner.getValue() + ",";
+		return internalName + "=" + (int) spinner.getValue() + ",";
 	}
 	
 	public void clear() {

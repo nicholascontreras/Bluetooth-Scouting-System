@@ -44,9 +44,9 @@ public class ScoutingForm extends JPanel {
 		wrapperPanel.add(this, BorderLayout.CENTER);
 		this.setPreferredSize(new Dimension(600, 400));
 		wrapperPanel.add(new ChatWindows(), BorderLayout.LINE_END);
-		
+
 		frame.add(wrapperPanel);
-		
+
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
 		this.tabbedPane = new JTabbedPane();
@@ -80,9 +80,7 @@ public class ScoutingForm extends JPanel {
 		for (ScoutingFormTab tab : tabs) {
 			output += tab.getData();
 		}
-
 		return output;
-
 	}
 
 	public JFrame getFrame() {
@@ -100,7 +98,7 @@ public class ScoutingForm extends JPanel {
 	public static void main(String[] args) {
 
 		name = JOptionPane.showInputDialog("Scout's Name:");
-		
+
 		//@formatter:off
 		
 		ScoutingFormTab prematch = new ScoutingFormTab("Prematch",
