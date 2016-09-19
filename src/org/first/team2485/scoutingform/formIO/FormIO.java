@@ -27,8 +27,8 @@ import javax.swing.JTextArea;
 import org.first.team2485.scoutingform.ScoutingForm;
 
 public class FormIO {
-	
-	private static final String[] RESERVED_PATTERNS = new String[] {"*", "^", "BROADCAST", "SendToServer"};
+
+	private static final String[] RESERVED_PATTERNS = new String[] { "*", "^", "BROADCAST", "SendToServer" };
 
 	private static FormIO instance;
 
@@ -81,17 +81,24 @@ public class FormIO {
 		File scriptPath = new File(containingFolder, "client.py");
 
 		System.out.println("Script path: " + scriptPath);
-
+		
 		try {
-			pythonProcess = cmd("py " + scriptPath.getCanonicalPath(), false);
+			pythonProcess = cmd("python -u " + scriptPath.getCanonicalPath(), false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		System.out.println("started cmd");
+		System.out.println("started cmd. Is alive? " + pythonProcess.isAlive());
 
 		pythonInput = new BufferedWriter(new OutputStreamWriter(pythonProcess.getOutputStream()));
+
 		pythonOutput = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
+		
+//		try {
+//			pythonOutput = new BufferedReader(new FileReader(new File(containingFolder, "pythonOutput.txt")));
+//		} catch (FileNotFoundException e1) {
+//			e1.printStackTrace();
+//		}
 
 		new Thread(() -> {
 			try {
@@ -104,13 +111,15 @@ public class FormIO {
 
 	private void readInputFromPython() throws IOException {
 
-		System.out.println("started thread");
+		System.out.println("started thread Alive? " + pythonProcess.isAlive());
 
 		while (pythonProcess.isAlive() || pythonOutput.ready()) {
 
-			System.out.println("Alive");
+			System.out.println("Ready: " + pythonOutput.ready());
 
 			if (pythonOutput.ready()) {
+				
+				System.out.println("ready, reading line...");
 
 				String curMessage = null;
 				try {
@@ -124,6 +133,7 @@ public class FormIO {
 					System.out.println("read message: " + curMessage);
 
 					if (curMessage.equals("SEND NAME")) {
+						System.out.println("Sending name: " + ScoutingForm.name);
 						sendStringToPython(ScoutingForm.name);
 					}
 
@@ -134,20 +144,33 @@ public class FormIO {
 				}
 			}
 
+			System.out.println("Python alive(pre)? " + pythonProcess.isAlive());
+			
+			pythonInput.newLine();
+			pythonInput.flush();
+			
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
+			System.out.println("Python alive? " + pythonProcess.isAlive());
+
+//			BufferedReader err = new BufferedReader(new InputStreamReader(pythonProcess.getErrorStream()));
+//			
+//			String error = err.readLine();
+//			
+//			while (error != null) {
+//				System.out.println(error);
+//				error = err.readLine();
+//			}
 		}
 	}
 
 	public void sendStringToPython(String s) {
-
-		byte[] byteMessage = s.getBytes();
-
 		try {
-			pythonProcess.getOutputStream().write(byteMessage);
+			pythonInput.write(s);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -201,7 +224,7 @@ public class FormIO {
 			e.printStackTrace();
 			return "An error occurred sending the data";
 		}
-		
+
 		try {
 			if (pythonOutput.readLine().equals("Scouting Data Received")) {
 				return "Sucessfully sent scouting data";
@@ -211,9 +234,9 @@ public class FormIO {
 		}
 		return "An error occurred sending the data";
 	}
-	
+
 	public boolean containsReservedPatterns(String s) {
-		
+
 		for (String cur : RESERVED_PATTERNS) {
 			if (s.contains(cur)) {
 				return true;

@@ -21,10 +21,8 @@ public class QuestionGroup extends Question {
 	private JXCollapsiblePane pane;
 	private JCheckBox checkbox;
 	private Question[] questions;
-	
-	private String internalName;
-	
-	public QuestionGroup(String title, String internalName, Question... questions) {
+
+	public QuestionGroup(String title, Question... questions) {
 		
 		this.setLayout(new BorderLayout());
 		
@@ -46,8 +44,6 @@ public class QuestionGroup extends Question {
 		pane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.add(pane, BorderLayout.SOUTH);
 		this.questions = questions;
-		
-		this.internalName = internalName;
 	}
 	
 	public void update() {

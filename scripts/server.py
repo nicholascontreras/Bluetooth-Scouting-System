@@ -6,6 +6,13 @@ import select
 if sys.version < '3':
 	input = raw_input
 
+# use this method instead of the normal input("")
+def waitForJavaInput():
+	result = ""
+	while result == "":
+		result = input("")
+	return result
+
 server_sock=BluetoothSocket( RFCOMM )
 server_sock.bind(("", PORT_ANY))
 server_sock.listen(1)
@@ -39,19 +46,12 @@ while True:
 	except Exception as err:
     		print("no incoming connections", err)
 
-	consoleInput = input("I")
-	while (consoleInput.find("^") != -1):
-		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]
+	consoleInput = waitForJavaInput()
 
-	while (consoleInput.find("*") != -1):
-		consoleInput = consoleInput[:consoleInput.find("*")] + consoleInput[(consoleInput.find("*") + 1):]
-	
-	print("Input is: " + consoleInput)
+	splitConsoleInput = consoleInput.decode().split("^")
 
-	if (not(consoleInput  is "")):
-		consoleInput = consoleInput + "*Server^"
-
-	queuedBroadcasts.append(consoleInput)
+	for curConsoleInput in splitConsoleInput:
+		queuedBroadcasts.append(consoleInput)
 
 	broadcastToSend = "IGNORE"
 	counter=0
@@ -79,7 +79,7 @@ while True:
 				for msg in msgs:
 					if (msg is ""):
 						continue
-					if (  msg.find("BROADCAST") is -1 and msg.find("SendToServer") is -1):
+					if (msg.find("BROADCAST") is -1 and msg.find("SendToServer") is -1):
 						print ("Making file...")
 						millis = int(round(time.time() * 1000))
 						newFile = open("C:/Users/Troy/Desktop/" + str(millis) + ".csv", "w")

@@ -3,9 +3,19 @@ import sys
 import time
 from threading import *
 import select
+import os
+import sys
 
+if sys.version_info[0] < 3:
+	input = raw_input
 
 t = None
+
+def waitForJavaInput():
+	result = ""
+	while result == "":
+		result = input("")
+	return result
 
 def receiveFromServer():
 	try:
@@ -18,7 +28,7 @@ def receiveFromServer():
         		return
 	if len(ready_to_read) > 0:
         		recv = sock.recv(2048)
-        		msgs = recv.decode().split("^")
+        		msgs = recv.split("^")
         		for msg in msgs:
         			if (not(msg is "")):
         				print (recv)
@@ -29,8 +39,15 @@ def receiveFromServer():
 	t = Timer(2.0, receiveFromServer)
 	t.start()
 
-if sys.version < '3':
-    input = raw_input
+print("started")
+
+print("Version: " + str(sys.version_info[0]))
+
+print ("SEND NAME")
+
+tempName = waitForJavaInput()
+
+print("Name = " + tempName)
 
 addr = None
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
@@ -74,26 +91,26 @@ t.start()
 
 while True:
 	consoleInput = input("")
-	while (consoleInput.find("^") != -1):
-		consoleInput = consoleInput[:consoleInput.find("^")] + consoleInput[(consoleInput.find("^") + 1):]	
 	print("Input is: " + consoleInput)
-	if consoleInput.find("BROADCAST") is 0:
-		consoleInput = consoleInput + "^"
-		sock.send(consoleInput)
-	elif consoleInput.find("SendToServer") is 0:
-        		consoleInput = consoleInput + "^"
-        		sock.send(consoleInput)
-
-	else:
-        		file = open("unsentData/scoutingData.csv", "r")
-        		data = file.read()
-        		file.close()
-        		print("Sending: " + data)
-        		data = data + "^"
-        		sock.send(data)
-        		print("Sent")
-        		millis = int(round(time.time() * 1000))
-        		newFile = open(str(millis) + ".csv", "w")
-        		newFile.write(data)
-        		newFile.close()
-        		print ("Scouting Data Received")
+	msgs = consoleInput.split("^")
+	for msg in msgs:
+        		if (not(msg is "")):
+        			if msg.find("BROADCAST") is 0:
+        				msg = msg + "^"
+        				sock.send(msg)
+        			elif msg.find("SendToServer") is 0:
+		        		msg = msg + "^"
+		        		sock.send(msg)
+		        	else:
+		        		file = open(os.path.dirname(os.path.realpath(__file__)) + "/unsentData/scoutingData.csv", "r")
+		        		data = file.read()
+		        		file.close()
+		        		print("Sending: " + data)
+		        		data = data + "^"
+		        		sock.send(data)
+		        		print("Sent")
+		        		millis = int(round(time.time() * 1000))
+		        		newFile = open(str(millis) + ".csv", "w")
+		        		newFile.write(data)
+		        		newFile.close()
+		        		print ("Scouting Data Received")

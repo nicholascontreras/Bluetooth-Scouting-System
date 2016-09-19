@@ -102,64 +102,64 @@ public class ScoutingForm extends JPanel {
 		//@formatter:off
 		
 		ScoutingFormTab prematch = new ScoutingFormTab("Prematch",
-			new SpinnerQuestion("Team number"),
-			new SpinnerQuestion("Match Number:")
+			new SpinnerQuestion("Team number", "teamnumber"),
+			new SpinnerQuestion("Match Number:", "matchnumber")
 		);
 		
 		ScoutingFormTab autonomous = new ScoutingFormTab("Autonomous", 
-			new CheckboxQuestion("Did they...", "Approach a Defense", "Cross a Defense"), 
-			new SpinnerQuestion("How many high goals did they make?"),
-			new SpinnerQuestion("How many low goals did they make?")
+			new CheckboxQuestion("Did they...", "autodefenceaction", "Approach a Defense", "Cross a Defense"), 
+			new SpinnerQuestion("How many high goals did they make?", "autohighgoals"),
+			new SpinnerQuestion("How many low goals did they make?", "autolowgoals")
 		);
 		
 		ScoutingFormTab teleop = new ScoutingFormTab("Teleop", 
 			new QuestionGroup("Defense Category A", 
-				new MultipleChoiceQuestion("Which defense is up?", "Cheval de Frise", "Portcullis"),
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
-				new SpinnerQuestion("How many times did they cross it?")
+				new MultipleChoiceQuestion("Which defense is up?", "defenceA", "Cheval de Frise", "Portcullis"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceAtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new SpinnerQuestion("How many times did they cross it?", "defenceAcount")
 			),
 			new QuestionGroup("Defense Category B", 
-				new MultipleChoiceQuestion("Which defense is up?", "Moat", "Ramparts"),
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
-				new SpinnerQuestion("How many times did they cross it?")
+				new MultipleChoiceQuestion("Which defense is up?", "defenceB", "Moat", "Ramparts"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceBtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new SpinnerQuestion("How many times did they cross it?", "defenceBcount")
 			),
 			new QuestionGroup("Defense Category C", 
-				new MultipleChoiceQuestion("Which defense is up?", "Drawbridge", "Sally Port"),
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
-				new SpinnerQuestion("How many times did they cross it?")
+				new MultipleChoiceQuestion("Which defense is up?", "defenceC", "Drawbridge", "Sally Port"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceCtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new SpinnerQuestion("How many times did they cross it?", "defenceCcount")
 			),
 			new QuestionGroup("Defense Category D", 
-				new MultipleChoiceQuestion("Which defense is up?", "Rough Terrain", "Rock Wall"),
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
-				new SpinnerQuestion("How many times did they cross it?")
+				new MultipleChoiceQuestion("Which defense is up?", "defenceD", "Rough Terrain", "Rock Wall"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceDtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new SpinnerQuestion("How many times did they cross it?", "defenceDcount")
 			),
 			new QuestionGroup("Low Bar", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
-				new SpinnerQuestion("How many times did they cross it?")
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "lowbartime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new SpinnerQuestion("How many times did they cross it?", "lowbarcount")
 			),
-			new SpinnerQuestion("How many high goals did they make?"),
-			new SpinnerQuestion("How many high goals did they miss?"),
-			new SpinnerQuestion("How many low goals did they make?"),
-			new SpinnerQuestion("How many low goals did they miss?"),
-			new MultipleChoiceQuestion("Did they...", "Challenge", "Scale", "Neither")
+			new SpinnerQuestion("How many high goals did they make?", "highmade"),
+			new SpinnerQuestion("How many high goals did they miss?", "highmiss"),
+			new SpinnerQuestion("How many low goals did they make?", "lowmade"),
+			new SpinnerQuestion("How many low goals did they miss?", "lowmiss"),
+			new MultipleChoiceQuestion("Did they...", "endgamestate", "Challenge", "Scale", "Neither")
 		);//<--- sad winky face 
 		
 		ScoutingFormTab ratings = new ScoutingFormTab("Ratings", 
-			new MultipleChoiceQuestion("Speed", "Snail", "Slow", "Average", "Speedy", "Lightning"),
-			new MultipleChoiceQuestion("Manueverability", "Unresponsive", "Sluggish", "Average" , "Responsive", "Nimble"),
-			new MultipleChoiceQuestion("Shooter Repeatability", "Unreliable", "Sketchy", "Average", "Consistent", "Reliable", "N/A"), 
-			new MultipleChoiceQuestion("Shooter Speed", "Snail", "Slow", "Average", "Speedy", "Lightning", "N/A"),
-			new MultipleChoiceQuestion("Defense", "Shitty", "Decent", "Average", "Good", "Badass", "N/A"), 
-			new MultipleChoiceQuestion("Defense Evasion", "Shitty", "Decent", "Average", "Good", "Badass", "N/A"), 
-			new MultipleChoiceQuestion("Overall Impression", "Shitty", "Decent", "Average", "Good", "Badass")
+			new MultipleChoiceQuestion("Speed", "speed", "Snail", "Slow", "Average", "Speedy", "Lightning"),
+			new MultipleChoiceQuestion("Manueverability", "manuever", "Unresponsive", "Sluggish", "Average" , "Responsive", "Nimble"),
+			new MultipleChoiceQuestion("Shooter Repeatability", "shooterrepeatability", "Unreliable", "Sketchy", "Average", "Consistent", "Reliable", "N/A"), 
+			new MultipleChoiceQuestion("Shooter Speed", "shooterspeed", "Snail", "Slow", "Average", "Speedy", "Lightning", "N/A"),
+			new MultipleChoiceQuestion("Defense", "defence", "Shitty", "Decent", "Average", "Good", "Badass", "N/A"), 
+			new MultipleChoiceQuestion("Defense Evasion", "defenceevasion", "Shitty", "Decent", "Average", "Good", "Badass", "N/A"), 
+			new MultipleChoiceQuestion("Overall Impression", "overall", "Shitty", "Decent", "Average", "Good", "Badass")
 		);
 		
 		ScoutingFormTab misc = new ScoutingFormTab("Miscellaneous", 
-			new SpinnerQuestion("How many tech fouls did they get?"),
-			new SpinnerQuestion("How many other fouls did they get?"),
-			new CheckboxQuestion("What role(s) did they play?", "Shooter", "Breacher", "Defender", "Support"),
-			new MultipleChoiceQuestion("Did they break down?", "Yes", "No"),
-			new FreeResponseQuestion("Comments:")
+			new SpinnerQuestion("How many tech fouls did they get?", "techfouls"),
+			new SpinnerQuestion("How many other fouls did they get?", "otherfouls"),
+			new CheckboxQuestion("What role(s) did they play?", "roles", "Shooter", "Breacher", "Defender", "Support"),
+			new MultipleChoiceQuestion("Did they break down?", "breakdown", "Yes", "No"),
+			new FreeResponseQuestion("Comments:", "comments")
 		);
 		
 		//@formatter:on
