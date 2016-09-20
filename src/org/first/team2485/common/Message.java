@@ -1,11 +1,14 @@
 package org.first.team2485.common;
-
+/**
+ * A common interface for creating, sending, receiving, and interpreting messages <br>
+ * Allows for a unified server/client system
+ */
 public class Message {
 	
 	private static final char[] RESERVED_CHARACTORS = {'^', '*'};
 	
 	public enum MessageType {
-		CHAT, SCOUTING_DATA, BET_PLACE, BET_PAYOUT;
+		CHAT, SCOUTING_DATA, FORM_UPDATE, BET_PLACE, BET_PAYOUT;
 	}
 	
 	private String reciever;

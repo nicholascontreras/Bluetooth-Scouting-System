@@ -37,6 +37,7 @@ public class ChatWindows extends JPanel implements ActionListener {
 
 		tabbedPane.addTab("Broadcasts", createTab("Broadcasts"));
 		tabbedPane.addTab("DM to Server", createTab("DM to Server"));
+		tabbedPane.addTab("Debug Console", createTab("Debug Console"));
 
 		this.add(tabbedPane, BorderLayout.CENTER);
 
@@ -75,15 +76,14 @@ public class ChatWindows extends JPanel implements ActionListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
+
 			ArrayList<Message> unhandledMessages = ClientPythonInterface.getInstance().unhandledMessages;
 
 			if (!unhandledMessages.isEmpty()) {
-				if (unhandledMessages.get(0).getMessageType() == MessageType.CHAT) {
 
-					JTextArea broadcastWindow = textAreas.get(0);
+				Message curMessage = ClientPythonInterface.getInstance().unhandledMessages.remove(0);
 
-					Message curMessage = ClientPythonInterface.getInstance().unhandledMessages.remove(0);
+				if (curMessage.getMessageType() == MessageType.CHAT) {
 
 					SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
 					String formatedTime = sdf.format(new Date(curMessage.getTimeSent()));
@@ -91,8 +91,19 @@ public class ChatWindows extends JPanel implements ActionListener {
 					String formattedMessage = curMessage.getSender() + " @ " + formatedTime + ": "
 							+ curMessage.getMessage();
 
-					broadcastWindow.setText(broadcastWindow.getText() + "\n" + formattedMessage);
+					if (curMessage.getReciever().equals(ScoutingForm.name)
+							&& curMessage.getReciever().equals("SERVER") || curMessage.getReciever().equals("SERVER")
+							&& curMessage.getReciever().equals(ScoutingForm.name)) {
+						
+						JTextArea serverDMWindow = textAreas.get(1);
+						serverDMWindow.setText(serverDMWindow.getText() + "\n" + formattedMessage);
+					} else if (curMessage.getReciever().equals("BROADCAST")) {
+						JTextArea broadcastWindow = textAreas.get(0);
+						broadcastWindow.setText(broadcastWindow.getText() + "\n" + formattedMessage);
+					}
 				}
+				JTextArea debugWindow = textAreas.get(2);
+				debugWindow.setText(debugWindow.getText() + "\n" + curMessage.getMessage());
 			}
 		}
 	}
@@ -111,6 +122,9 @@ public class ChatWindows extends JPanel implements ActionListener {
 			msg = new Message(textFields.get(0).getText(), "SERVER", ScoutingForm.name, MessageType.CHAT);
 			textFields.get(1).setText("");
 		}
-		ClientPythonInterface.getInstance().sendStringToPython(msg.getSendableForm());
+
+		if (msg != null) {
+			ClientPythonInterface.getInstance().sendStringToPython(msg.getSendableForm());
+		}
 	}
 }

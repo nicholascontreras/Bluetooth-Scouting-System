@@ -17,6 +17,9 @@ def waitForJavaInput():
 
 print("Python Version: " + str(sys.version_info[0]))
 
+temp = waitForJavaInput()
+print("Name = " + temp)
+
 addr = None
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
 print("Looking for scouting server...")
@@ -60,7 +63,7 @@ while True:
 	msgs = consoleInput.split("^")
 	for msg in msgs:
         		if (not(msg is "")):
-		        	if (msg == "SEND_SCOUTING_DATA")
+		        	if (msg == "SEND_SCOUTING_DATA"):
 		        		file = open(os.path.dirname(os.path.realpath(__file__)) + "/unsentData/scoutingData.csv", "r")
 		        		data = file.read()
 		        		file.close()
@@ -82,9 +85,9 @@ while True:
 			        		print(ready_to_read)
 			        		print(ready_to_write)
 			        		print(in_error)
-				except select.error:
+			        	except select.error:
 			        		print ("Error in Python 'Select'")
-				if len(ready_to_read) > 0:
+			        	if len(ready_to_read) > 0:
 			        		recv = sock.recv(2048)
 			        		msgs = recv.split("^")
 			        		for msg in msgs:

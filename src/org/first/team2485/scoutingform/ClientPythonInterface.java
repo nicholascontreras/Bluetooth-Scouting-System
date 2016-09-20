@@ -3,28 +3,15 @@ package org.first.team2485.scoutingform;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-//import java.nio.file.Files;
-//import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Pattern;
 
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-
 import org.first.team2485.common.Message;
+import org.first.team2485.common.Message.MessageType;
 
 public class ClientPythonInterface {
 
@@ -34,30 +21,26 @@ public class ClientPythonInterface {
 
 	private Process pythonProcess; // the process of the python script
 
-	public ArrayList<Message> messageHistory;
-	public ArrayList<Message> unhandledMessages;
+	protected ArrayList<Message> messageHistory;
+	protected ArrayList<Message> unhandledMessages;
 
 	private BufferedReader pythonOutput;
 	private BufferedWriter pythonInput;
 
-	public static ClientPythonInterface getInstance() { // only allow one
-														// instance
+	protected static ClientPythonInterface getInstance() { // only allow one
+															// instance
 		if (instance == null) {
 			instance = new ClientPythonInterface();
-			try {
-				File f = new File(instance.getClass().getResource("").toURI());
+			File f = new File(instance.getClass().getResource("").getPath().substring(5));
 
-				System.out.println(f);
+			System.out.println(f);
 
-				while (!f.getName().equals("org")) {
-					f = f.getParentFile();
-				}
-
-				containingFolder = f.getParentFile().getParentFile().getParentFile();
-
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
+			while (!f.getName().equals("org")) {
+				f = f.getParentFile();
 			}
+
+			containingFolder = f.getParentFile().getParentFile();
+
 		}
 		return instance;
 	}
@@ -67,11 +50,11 @@ public class ClientPythonInterface {
 		unhandledMessages = new ArrayList<Message>();
 	}
 
-	public Process getProcess() {
+	protected Process getProcess() {
 		return pythonProcess;
 	}
 
-	public void startScript() {
+	protected void startScript() {
 
 		if (pythonProcess != null) {
 			pythonProcess.destroyForcibly();
@@ -90,15 +73,7 @@ public class ClientPythonInterface {
 		System.out.println("started cmd. Is alive? " + pythonProcess.isAlive());
 
 		pythonInput = new BufferedWriter(new OutputStreamWriter(pythonProcess.getOutputStream()));
-
 		pythonOutput = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
-
-		// try {
-		// pythonOutput = new BufferedReader(new FileReader(new
-		// File(containingFolder, "pythonOutput.txt")));
-		// } catch (FileNotFoundException e1) {
-		// e1.printStackTrace();
-		// }
 
 		new Thread(() -> {
 			try {
@@ -111,15 +86,25 @@ public class ClientPythonInterface {
 
 	private void readInputFromPython() throws IOException {
 
-		System.out.println("started thread Alive? " + pythonProcess.isAlive());
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		pythonInput.write(ScoutingForm.name);
+		pythonInput.newLine();
+		pythonInput.flush();
 
 		while (pythonProcess.isAlive() || pythonOutput.ready()) {
 
-			System.out.println("Ready: " + pythonOutput.ready());
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
 			if (pythonOutput.ready()) {
-
-				System.out.println("ready, reading line...");
 
 				String curMessage = null;
 				try {
@@ -136,47 +121,33 @@ public class ClientPythonInterface {
 
 						Message message = new Message(curMessage.substring("MESSAGE".length()));
 
+						if (message.getMessageType() == MessageType.FORM_UPDATE) {
+							saveFormVersion(message.getMessage());
+						}
+
+						System.out.println("added message");
 						messageHistory.add(message);
 						unhandledMessages.add(message);
 					} else {
-						if (curMessage.equals("SEND NAME")) {
-							System.out.println("Sending name: " + ScoutingForm.name);
-							sendStringToPython(ScoutingForm.name);
-						}
+						Message debugMessage = new Message(curMessage, ScoutingForm.name, "DEBUG", MessageType.CHAT);
+						
+						messageHistory.add(debugMessage);
+						unhandledMessages.add(debugMessage);
 					}
 				}
 			} else {
 				System.out.println("Input was null");
 			}
+
+			sendStringToPython("READ_ONLY");
+			pythonInput.newLine();
+			pythonInput.flush();
 		}
-
-		System.out.println("Python alive(pre)? " + pythonProcess.isAlive());
-
-		pythonInput.newLine();
-		pythonInput.flush();
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("Python alive? " + pythonProcess.isAlive());
-
-		// BufferedReader err = new BufferedReader(new
-		// InputStreamReader(pythonProcess.getErrorStream()));
-		//
-		// String error = err.readLine();
-		//
-		// while (error != null) {
-		// System.out.println(error);
-		// error = err.readLine();
-		// }
 	}
 
-	public void sendStringToPython(String s) {
+	protected void sendStringToPython(String s) {
 		try {
-			pythonInput.write(s);
+			pythonInput.write(s + "^");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -195,9 +166,9 @@ public class ClientPythonInterface {
 		return null;
 	}
 
-	public String saveData(String data, boolean forceWrite) { // method
-																// messy,
-																// fix
+	protected String saveData(String data, boolean forceWrite) { // method
+																	// messy,
+																	// fix
 
 		File file = new File(containingFolder, "scoutingData.csv");
 
@@ -222,7 +193,7 @@ public class ClientPythonInterface {
 
 	}
 
-	public String sendData() {
+	protected String sendData() {
 
 		try {
 			pythonInput.write("");
@@ -241,12 +212,11 @@ public class ClientPythonInterface {
 		return "An error occurred sending the data";
 	}
 
-	public void saveFormVersion(String newFormVersion) throws IOException {
+	private void saveFormVersion(String newFormVersion) throws IOException {
 
 		String[] dataToWrite = newFormVersion.split(Pattern.quote("!@#$%^&*()"));
 
-		FileWriter fileWriter = new FileWriter(
-				new File(containingFolder, "Bluetooth Scouting Client" + System.currentTimeMillis() + ".jar"));
+		FileWriter fileWriter = new FileWriter(new File(containingFolder, "Bluetooth Scouting Client (UPDATE).jar"));
 
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
@@ -256,5 +226,32 @@ public class ClientPythonInterface {
 		}
 
 		bufferedWriter.close();
+	}
+
+	protected boolean checkForUpdate() {
+
+		for (File f : containingFolder.listFiles()) {
+			if (f.getName().contains("(UPDATE)")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	protected void switchToUpdatedVersion() {
+
+		for (File f : containingFolder.listFiles()) {
+			if (f.getName().contains("Bluetooth Scouting Client.jar")) {
+				f.renameTo(new File(containingFolder,
+						"Bluetooth Scouting Client (OLD:" + System.currentTimeMillis() + ").jar"));
+			}
+		}
+
+		for (File f : containingFolder.listFiles()) {
+			if (f.getName().contains("(UPDATE)")) {
+				f.renameTo(new File(containingFolder, "Bluetooth Scouting Client.jar"));
+			}
+		}
+		
 	}
 }
