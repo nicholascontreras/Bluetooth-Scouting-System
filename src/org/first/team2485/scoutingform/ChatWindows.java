@@ -1,20 +1,21 @@
 package org.first.team2485.scoutingform;
 
+import org.first.team2485.common.Message;
+import org.first.team2485.common.Message.MessageType;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import org.first.team2485.scoutingform.formIO.FormIO;
-
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 
 public class ChatWindows extends JPanel implements ActionListener {
 
@@ -74,43 +75,42 @@ public class ChatWindows extends JPanel implements ActionListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			
+			ArrayList<Message> unhandledMessages = ClientPythonInterface.getInstance().unhandledMessages;
 
-			if (!FormIO.getInstance().unhandledMessages.isEmpty()) {
-				JTextArea broadcastWindow = textAreas.get(0);
+			if (!unhandledMessages.isEmpty()) {
+				if (unhandledMessages.get(0).getMessageType() == MessageType.CHAT) {
 
-				broadcastWindow
-						.setText(broadcastWindow.getText() + "\n" + FormIO.getInstance().unhandledMessages.remove(0));
+					JTextArea broadcastWindow = textAreas.get(0);
+
+					Message curMessage = ClientPythonInterface.getInstance().unhandledMessages.remove(0);
+
+					SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
+					String formatedTime = sdf.format(new Date(curMessage.getTimeSent()));
+
+					String formattedMessage = curMessage.getSender() + " @ " + formatedTime + ": "
+							+ curMessage.getMessage();
+
+					broadcastWindow.setText(broadcastWindow.getText() + "\n" + formattedMessage);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		
+
 		String actionCommand = arg0.getActionCommand();
-		
-		String messageToSend = ScoutingForm.name + "*";
-		
-		String userInput = null;
-		
-		if (actionCommand.equals("Broadcasts Button")) {		
-			userInput = textFields.get(0).getText();
-		} else if (actionCommand.equals("DM to Server")) {
-			userInput = textFields.get(1).getText();
-		}
-		
-		if (FormIO.getInstance().containsReservedPatterns(userInput)) {
-			return;
-		}
-		
-		messageToSend += userInput + "^";
-		
-		FormIO.getInstance().sendStringToPython(messageToSend);
-		
-		if (actionCommand.equals("Broadcasts Button")) {		
-			textFields.get(0).setText("");			
-		} else if (actionCommand.equals("DM to Server")) {
+
+		Message msg = null;
+
+		if (actionCommand.equals("Broadcasts Button")) {
+			msg = new Message(textFields.get(0).getText(), "BROADCAST", ScoutingForm.name, MessageType.CHAT);
+			textFields.get(0).setText("");
+		} else if (actionCommand.equals("DM to Server Button")) {
+			msg = new Message(textFields.get(0).getText(), "SERVER", ScoutingForm.name, MessageType.CHAT);
 			textFields.get(1).setText("");
 		}
+		ClientPythonInterface.getInstance().sendStringToPython(msg.getSendableForm());
 	}
 }

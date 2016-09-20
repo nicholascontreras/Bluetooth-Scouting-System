@@ -9,8 +9,6 @@ import java.util.TimerTask;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import org.first.team2485.scoutingform.formIO.FormIO;
-
 public class SetupButton extends JButton implements ActionListener {
 
 	private ScoutingForm form;
@@ -30,7 +28,7 @@ public class SetupButton extends JButton implements ActionListener {
 
 			@Override
 			public void run() {
-				Process p = FormIO.getInstance().getProcess();
+				Process p = ClientPythonInterface.getInstance().getProcess();
 
 				if (p != null) {
 					if (p.isAlive()) {
@@ -57,6 +55,6 @@ public class SetupButton extends JButton implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FormIO.getInstance().startScript();
+		ClientPythonInterface.getInstance().startScript();
 	}
 }

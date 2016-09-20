@@ -7,8 +7,6 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import org.first.team2485.scoutingform.formIO.FormIO;
-
 /**
  * 
  * @author Jeremy McCulloch
@@ -32,13 +30,13 @@ public class SubmitButton extends JButton implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String dataToSend = form.submit();
-		String result = FormIO.getInstance().saveData(dataToSend, false);
+		String result = ClientPythonInterface.getInstance().saveData(dataToSend, false);
 
 		boolean resetForm = false;
 
 		if (result.equals("Successfully saved the scouting data")) {
 
-			result = FormIO.getInstance().sendData();
+			result = ClientPythonInterface.getInstance().sendData();
 
 			JOptionPane.showMessageDialog(null, result);
 
@@ -52,7 +50,7 @@ public class SubmitButton extends JButton implements ActionListener {
 
 			if (input == JOptionPane.YES_OPTION) {
 
-				result = FormIO.getInstance().sendData();
+				result = ClientPythonInterface.getInstance().sendData();
 
 				JOptionPane.showMessageDialog(null, "When sending old data...\n" + result);
 
@@ -64,12 +62,12 @@ public class SubmitButton extends JButton implements ActionListener {
 
 					if (input == JOptionPane.YES_OPTION) {
 
-						result = FormIO.getInstance().saveData(dataToSend, true);
+						result = ClientPythonInterface.getInstance().saveData(dataToSend, true);
 
 						if (!result.equals("Successfully saved the scouting data")) {
 							JOptionPane.showMessageDialog(null, result);
 						} else {
-							result = FormIO.getInstance().sendData();
+							result = ClientPythonInterface.getInstance().sendData();
 
 							JOptionPane.showMessageDialog(null, result);
 
@@ -79,12 +77,12 @@ public class SubmitButton extends JButton implements ActionListener {
 						}
 					}
 				} else {
-					result = FormIO.getInstance().saveData(dataToSend, false);
+					result = ClientPythonInterface.getInstance().saveData(dataToSend, false);
 
 					if (!result.equals("Successfully saved the scouting data")) {
 						JOptionPane.showMessageDialog(null, result);
 					} else {
-						result = FormIO.getInstance().sendData();
+						result = ClientPythonInterface.getInstance().sendData();
 
 						JOptionPane.showMessageDialog(null, result);
 
@@ -94,12 +92,12 @@ public class SubmitButton extends JButton implements ActionListener {
 					}
 				}
 			} else {
-				result = FormIO.getInstance().saveData(dataToSend, true);
+				result = ClientPythonInterface.getInstance().saveData(dataToSend, true);
 
 				if (!result.equals("Successfully saved the scouting data")) {
 					JOptionPane.showMessageDialog(null, result);
 				} else {
-					result = FormIO.getInstance().sendData();
+					result = ClientPythonInterface.getInstance().sendData();
 
 					JOptionPane.showMessageDialog(null, result);
 				}

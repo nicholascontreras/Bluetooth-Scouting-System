@@ -1,4 +1,4 @@
-package org.first.team2485.scoutingform.formIO;
+package org.first.team2485.scoutingform;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -24,27 +24,26 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-import org.first.team2485.scoutingform.ScoutingForm;
+import org.first.team2485.common.Message;
 
-public class FormIO {
+public class ClientPythonInterface {
 
-	private static final String[] RESERVED_PATTERNS = new String[] { "*", "^", "BROADCAST", "SendToServer" };
-
-	private static FormIO instance;
+	private static ClientPythonInterface instance;
 
 	private static File containingFolder;
 
 	private Process pythonProcess; // the process of the python script
 
-	public ArrayList<String> messageHistory;
-	public ArrayList<String> unhandledMessages;
+	public ArrayList<Message> messageHistory;
+	public ArrayList<Message> unhandledMessages;
 
 	private BufferedReader pythonOutput;
 	private BufferedWriter pythonInput;
 
-	public static FormIO getInstance() { // only allow one instance
+	public static ClientPythonInterface getInstance() { // only allow one
+														// instance
 		if (instance == null) {
-			instance = new FormIO();
+			instance = new ClientPythonInterface();
 			try {
 				File f = new File(instance.getClass().getResource("").toURI());
 
@@ -63,9 +62,9 @@ public class FormIO {
 		return instance;
 	}
 
-	private FormIO() {
-		messageHistory = new ArrayList<String>();
-		unhandledMessages = new ArrayList<String>();
+	private ClientPythonInterface() {
+		messageHistory = new ArrayList<Message>();
+		unhandledMessages = new ArrayList<Message>();
 	}
 
 	public Process getProcess() {
@@ -81,7 +80,7 @@ public class FormIO {
 		File scriptPath = new File(containingFolder, "client.py");
 
 		System.out.println("Script path: " + scriptPath);
-		
+
 		try {
 			pythonProcess = cmd("python -u " + scriptPath.getCanonicalPath(), false);
 		} catch (IOException e) {
@@ -93,12 +92,13 @@ public class FormIO {
 		pythonInput = new BufferedWriter(new OutputStreamWriter(pythonProcess.getOutputStream()));
 
 		pythonOutput = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
-		
-//		try {
-//			pythonOutput = new BufferedReader(new FileReader(new File(containingFolder, "pythonOutput.txt")));
-//		} catch (FileNotFoundException e1) {
-//			e1.printStackTrace();
-//		}
+
+		// try {
+		// pythonOutput = new BufferedReader(new FileReader(new
+		// File(containingFolder, "pythonOutput.txt")));
+		// } catch (FileNotFoundException e1) {
+		// e1.printStackTrace();
+		// }
 
 		new Thread(() -> {
 			try {
@@ -118,7 +118,7 @@ public class FormIO {
 			System.out.println("Ready: " + pythonOutput.ready());
 
 			if (pythonOutput.ready()) {
-				
+
 				System.out.println("ready, reading line...");
 
 				String curMessage = null;
@@ -132,40 +132,46 @@ public class FormIO {
 
 					System.out.println("read message: " + curMessage);
 
-					if (curMessage.equals("SEND NAME")) {
-						System.out.println("Sending name: " + ScoutingForm.name);
-						sendStringToPython(ScoutingForm.name);
+					if (curMessage.startsWith("MESSAGE")) {
+
+						Message message = new Message(curMessage.substring("MESSAGE".length()));
+
+						messageHistory.add(message);
+						unhandledMessages.add(message);
+					} else {
+						if (curMessage.equals("SEND NAME")) {
+							System.out.println("Sending name: " + ScoutingForm.name);
+							sendStringToPython(ScoutingForm.name);
+						}
 					}
-
-					messageHistory.add(curMessage);
-					unhandledMessages.add(curMessage);
-				} else {
-					System.out.println("Input was null");
 				}
+			} else {
+				System.out.println("Input was null");
 			}
-
-			System.out.println("Python alive(pre)? " + pythonProcess.isAlive());
-			
-			pythonInput.newLine();
-			pythonInput.flush();
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			System.out.println("Python alive? " + pythonProcess.isAlive());
-
-//			BufferedReader err = new BufferedReader(new InputStreamReader(pythonProcess.getErrorStream()));
-//			
-//			String error = err.readLine();
-//			
-//			while (error != null) {
-//				System.out.println(error);
-//				error = err.readLine();
-//			}
 		}
+
+		System.out.println("Python alive(pre)? " + pythonProcess.isAlive());
+
+		pythonInput.newLine();
+		pythonInput.flush();
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Python alive? " + pythonProcess.isAlive());
+
+		// BufferedReader err = new BufferedReader(new
+		// InputStreamReader(pythonProcess.getErrorStream()));
+		//
+		// String error = err.readLine();
+		//
+		// while (error != null) {
+		// System.out.println(error);
+		// error = err.readLine();
+		// }
 	}
 
 	public void sendStringToPython(String s) {
@@ -233,16 +239,6 @@ public class FormIO {
 			e.printStackTrace();
 		}
 		return "An error occurred sending the data";
-	}
-
-	public boolean containsReservedPatterns(String s) {
-
-		for (String cur : RESERVED_PATTERNS) {
-			if (s.contains(cur)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public void saveFormVersion(String newFormVersion) throws IOException {

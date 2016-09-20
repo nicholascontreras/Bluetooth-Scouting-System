@@ -24,7 +24,7 @@ connectedSocketNames = []
 queuedBroadcasts = []
 
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
-advertise_service( server_sock, "Scouting Server", service_id = uuid, service_classes = [ uuid, SERIAL_PORT_CLASS ],profiles = [ SERIAL_PORT_PROFILE ])
+advertise_service( server_sock, "Scouting Server", service_id = uuid, service_classes = [ uuid, SERIAL_PORT_CLASS ], profiles = [ SERIAL_PORT_PROFILE ])
 
 print("Waiting for connections on RFCOMM channel: " + str(port))
 
@@ -32,8 +32,7 @@ while True:
 	try:
 		client_sock, client_info = server_sock.accept()
 		print("accept")
-		ready_to_read, ready_to_write, in_error = \
-		select.select([client_sock], [], [], 15)
+		ready_to_read, ready_to_write, in_error = select.select([client_sock], [], [], 15)
 		print("select")
 		name = client_sock.recv(2048)
 		print("read: " + name)
@@ -53,8 +52,7 @@ while True:
 	for curConsoleInput in splitConsoleInput:
 		queuedBroadcasts.append(consoleInput)
 
-	broadcastToSend = "IGNORE"
-	counter=0
+	counter = 0
 	if len(queuedBroadcasts) > 0:
 		broadcastToSend = queuedBroadcasts[0]
 		queuedBroadcasts.remove(broadcastToSend)
@@ -62,7 +60,7 @@ while True:
 			
 			curSocket = connectedSockets[counter]
 			try:
-				ready_to_read, ready_to_write, in_error = select.select([curSocket], [curSocket], [curSocket], 10)
+				ready_to_read, ready_to_write, in_error = select.select([curSocket], [curSocket], [curSocket], 5)
 				print("Select")
 				print(ready_to_read)
 				print(ready_to_write)
@@ -77,35 +75,24 @@ while True:
 				recv = curSocket.recv(2048)
 				msgs = recv.decode().split("^")
 				for msg in msgs:
-					if (msg is ""):
-						continue
-					if (msg.find("BROADCAST") is -1 and msg.find("SendToServer") is -1):
-						print ("Making file...")
-						millis = int(round(time.time() * 1000))
-						newFile = open("C:/Users/Troy/Desktop/" + str(millis) + ".csv", "w")
-						newFile.write(msg)
-						newFile.close()
-						print ("Made File")
-					if msg.find("BROADCAST") is 0:
-			        			# do stuff with received data
-			        			queuedBroadcasts.append(msg)
-			        			print ("recieved: " + msg)
-					if msg.find("SendToServer") is 0:
-			        			print ("received:" + msg)
+
+					if (msg.find("SERVER") == 0):
+						print ("MESSAGE" + msg)
+					else:
+						queuedBroadcasts.append(msg)
 			if len(ready_to_write) > 0:
-	        	# connection for sending is valid, send the next item
-	        		if broadcastToSend != "IGNORE":
-	        				try:
-	        					if ( broadcastToSend.find(connectedSocketNames[counter] is 0)): 
-	        						curSocket.send(broadcastToSend)
-	        					elif (broadcastToSend.find("BROADCAST") is 0):
-	          						curSocket.send(broadcastToSend)
-	          				except Exception:
-	          					print ("Connection disconnected for " + connectedSocketNames[counter])
-	          					#curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
-	          					curSocket.close()
-	          					connectedSockets.remove(curSocket)
-	          					connectedSocketNames.remove(connectedSocketNames[counter])
-	          					print ("Connection successfully disconnected")
-	          					continue
+		        		if broadcastToSend != "READ_ONLY":
+		        			try:
+		        				if ( broadcastToSend.find(connectedSocketNames[counter] is 0)): 
+		        					curSocket.send(broadcastToSend)
+		        				elif (broadcastToSend.find("BROADCAST") is 0):
+		          					curSocket.send(broadcastToSend)
+		          			except Exception:
+		          				print ("Connection disconnected for " + connectedSocketNames[counter])
+		          				#curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
+		          				curSocket.close()
+		          				connectedSockets.remove(curSocket)
+		          				connectedSocketNames.remove(connectedSocketNames[counter])
+		          				print ("Connection successfully disconnected")
+		          				continue
 			counter += 1

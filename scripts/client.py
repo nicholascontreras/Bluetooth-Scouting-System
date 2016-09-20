@@ -9,45 +9,13 @@ import sys
 if sys.version_info[0] < 3:
 	input = raw_input
 
-t = None
-
 def waitForJavaInput():
 	result = ""
 	while result == "":
 		result = input("")
 	return result
 
-def receiveFromServer():
-	try:
-        		ready_to_read, ready_to_write, in_error = select.select([sock], [], [sock])
-        		print(ready_to_read)
-        		print(ready_to_write)
-        		print(in_error)
-	except select.error:
-        		print ("Error in Python 'Select'")
-        		return
-	if len(ready_to_read) > 0:
-        		recv = sock.recv(2048)
-        		msgs = recv.split("^")
-        		for msg in msgs:
-        			if (not(msg is "")):
-        				print (recv)
-	if not (ready_to_read[0] or ready_to_write[0] or in_error[0]):
-		print ("no server message")	
-
-	print("starting new timer")
-	t = Timer(2.0, receiveFromServer)
-	t.start()
-
-print("started")
-
-print("Version: " + str(sys.version_info[0]))
-
-print ("SEND NAME")
-
-tempName = waitForJavaInput()
-
-print("Name = " + tempName)
+print("Python Version: " + str(sys.version_info[0]))
 
 addr = None
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
@@ -78,7 +46,7 @@ sock=BluetoothSocket( RFCOMM )
 try:
 	sock.connect((host, port))
 	print("SEND NAME")
-	scoutName = input("")
+	scoutName = waitForJavaInput()
 	print("Scout name received")
 	sock.send(scoutName)
 except TypeError as err:
@@ -86,31 +54,39 @@ except TypeError as err:
     	print ("Error: ", err)
     	sys.exit()
 
-t = Timer(2.0, receiveFromServer)
-t.start()
-
 while True:
-	consoleInput = input("")
+	consoleInput = waitForJavaInput()
 	print("Input is: " + consoleInput)
 	msgs = consoleInput.split("^")
 	for msg in msgs:
         		if (not(msg is "")):
-        			if msg.find("BROADCAST") is 0:
-        				msg = msg + "^"
-        				sock.send(msg)
-        			elif msg.find("SendToServer") is 0:
-		        		msg = msg + "^"
-		        		sock.send(msg)
-		        	else:
+		        	if (msg == "SEND_SCOUTING_DATA")
 		        		file = open(os.path.dirname(os.path.realpath(__file__)) + "/unsentData/scoutingData.csv", "r")
 		        		data = file.read()
 		        		file.close()
 		        		print("Sending: " + data)
 		        		data = data + "^"
 		        		sock.send(data)
-		        		print("Sent")
+		        		print("Passed to socket...")
 		        		millis = int(round(time.time() * 1000))
-		        		newFile = open(str(millis) + ".csv", "w")
+		        		newFile = open(os.path.dirname(os.path.realpath(__file__)) + "/" + str(millis) + ".csv", "w")
 		        		newFile.write(data)
 		        		newFile.close()
-		        		print ("Scouting Data Received")
+		        		print ("Scouting Data Sent")
+		        	elif (msg != "READ_ONLY"):
+		        		msg = msg + "^"
+		        		sock.send(msg)
+		        	else:
+		        		try:
+			        		ready_to_read, ready_to_write, in_error = select.select([sock], [], [sock], 5)
+			        		print(ready_to_read)
+			        		print(ready_to_write)
+			        		print(in_error)
+				except select.error:
+			        		print ("Error in Python 'Select'")
+				if len(ready_to_read) > 0:
+			        		recv = sock.recv(2048)
+			        		msgs = recv.split("^")
+			        		for msg in msgs:
+			        			if (not(msg is "")):
+			        				print ("MESSAGE" + msg)

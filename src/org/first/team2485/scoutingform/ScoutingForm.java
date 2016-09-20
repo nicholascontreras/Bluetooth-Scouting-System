@@ -13,7 +13,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.first.team2485.scoutingform.formIO.FormIO;
 import org.first.team2485.scoutingform.questions.CheckboxQuestion;
 import org.first.team2485.scoutingform.questions.FreeResponseQuestion;
 import org.first.team2485.scoutingform.questions.MultipleChoiceQuestion;
@@ -37,7 +36,7 @@ public class ScoutingForm extends JPanel {
 
 	public ScoutingForm(ScoutingFormTab... tabs) {
 
-		FormIO.getInstance().startScript();
+		ClientPythonInterface.getInstance().startScript();
 
 		frame = new JFrame();
 		JPanel wrapperPanel = new JPanel(new BorderLayout());

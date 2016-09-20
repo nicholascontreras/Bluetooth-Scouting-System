@@ -12,18 +12,18 @@ import java.util.Scanner;
 
 import org.first.team2485.scoutingform.ScoutingForm;
 
-public class ServerIO {
+public class ServerPythonInterface {
 	protected ArrayList<String> messages;
-	private static ServerIO instance;
+	private static ServerPythonInterface instance;
 	
 	private Process pythonProcess;
 	
 	private BufferedWriter pythonInput;
 	private BufferedReader pythonOutput;
 
-	public static ServerIO getInstance() { // only allow one instance
+	public static ServerPythonInterface getInstance() { // only allow one instance
 		if (instance == null) {
-			instance = new ServerIO();
+			instance = new ServerPythonInterface();
 		}
 		return instance;
 	}
