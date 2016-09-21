@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,15 +31,11 @@ import com.sun.glass.ui.Timer;
 
 public class ScoutingServer extends JFrame {
 
-	private static final byte[] IGNORE_TAG = "IGNORE".getBytes();
-	
-	private Process pythonServer = null;
-	
-	private boolean isScriptRunning = false;
-		
 	private JTabbedPane tabbedPane;
 	
 	private JFrame myself;
+	
+	protected static ServerSettings serverSettings;
 	
 
 	public static void main(String[] args) {
@@ -48,6 +45,8 @@ public class ScoutingServer extends JFrame {
 	private ScoutingServer() {
 		
 		this.myself = this;
+		
+		serverSettings = new ServerSettings();
 
 		JPanel lowerPane = new JPanel();
 		
@@ -75,18 +74,7 @@ public class ScoutingServer extends JFrame {
 					
 				}
 				
-				pythonServer = cmd("py " + scriptDirButton.getSelectedFile().getAbsolutePath(), false);
-
-				while (pythonServer.isAlive()) {
-
-					try {
-						if (pythonServer.getInputStream().read() != -1 || pythonServer.getErrorStream().read() != -1) {
-							pythonServer.getOutputStream().write(IGNORE_TAG);
-						}
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
+				ServerPythonInterface.getInstance().startScript();
 				
 			}
 		});
@@ -119,7 +107,7 @@ public class ScoutingServer extends JFrame {
 				
 				String clientName = JOptionPane.showInputDialog(myself, "Client Name");
 				
-				DMTab newTab = new DMTab(clientName, pythonServer);
+				DMTab newTab = new DMTab(clientName, ServerPythonInterface.getInstance().getProcess());
 				
 			}
 		});
@@ -196,5 +184,34 @@ public class ScoutingServer extends JFrame {
 		String toReturn = s.hasNext() ? s.next() : "";
 		s.close();
 		return toReturn;
+	}
+	
+	class ServerSettings {
+		
+		protected String scoutingFormSaveFile;
+		protected String serverPythonLoc;
+		
+		private ServerSettings() {
+			loadServerSettings();
+		}
+		
+		private void loadServerSettings() {
+			
+			try {
+				FileReader fileReader = new FileReader(ServerPythonInterface.getInstance().containingFolder.getParent() + "/serverSettings.txt");
+				
+				BufferedReader reader = new BufferedReader(fileReader);
+				
+				scoutingFormSaveFile = reader.readLine();
+				serverPythonLoc = reader.readLine();
+				
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+		}
+		
 	}
 }

@@ -19,7 +19,7 @@ public class ClientPythonInterface {
 
 	private static ClientPythonInterface instance;
 
-	private static File containingFolder;
+	private File containingFolder;
 
 	private Process pythonProcess; // the process of the python script
 
@@ -33,26 +33,6 @@ public class ClientPythonInterface {
 															// instance
 		if (instance == null) {
 			instance = new ClientPythonInterface();
-
-			String path = instance.getClass().getResource("").getPath();
-
-			System.out.println("Starting path: " + path);
-
-			path = path.replaceAll(Pattern.quote("%20"), " ");
-			path = path.replaceAll(Pattern.quote(".jar!"), ".jar");
-
-			System.out.println("Finalzied Path: " + path);
-
-			File f = new File(path);
-
-			System.out.println("Path Object:" + f);
-
-			while (!f.getName().equals("org")) {
-				f = f.getParentFile();
-			}
-
-			containingFolder = f.getParentFile().getParentFile();
-
 		}
 		return instance;
 	}
@@ -60,6 +40,25 @@ public class ClientPythonInterface {
 	private ClientPythonInterface() {
 		messageHistory = new ArrayList<Message>();
 		unhandledMessages = new ArrayList<Message>();
+		
+		String path = this.getClass().getResource("").getPath();
+
+		System.out.println("Starting path: " + path);
+
+		path = path.replaceAll(Pattern.quote("%20"), " ");
+		path = path.replaceAll(Pattern.quote(".jar!"), ".jar");
+
+		System.out.println("Finalzied Path: " + path);
+
+		File f = new File(path);
+
+		System.out.println("Path Object:" + f);
+
+		while (!f.getName().equals("org")) {
+			f = f.getParentFile();
+		}
+
+		containingFolder = f.getParentFile().getParentFile();
 	}
 
 	protected Process getProcess() {

@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import org.first.team2485.common.Message;
 import org.first.team2485.scoutingform.ScoutingForm;
@@ -17,19 +18,20 @@ public class ServerPythonInterface {
 	protected ArrayList<Message> messageHistory;
 	protected ArrayList<Message> unhandledMessages;
 	
+	protected File containingFolder;
+	
 	private static ServerPythonInterface instance;
 	
 	private Process pythonProcess;
 	
 	private BufferedWriter pythonInput;
 	private BufferedReader pythonOutput;
-	
-	private File serverScriptPath;
 
 	protected static ServerPythonInterface getInstance() { // only allow one instance
 		if (instance == null) {
 			instance = new ServerPythonInterface();
 		}
+		
 		return instance;
 	}
 	
@@ -37,6 +39,24 @@ public class ServerPythonInterface {
 		messageHistory = new ArrayList<Message>();
 		unhandledMessages = new ArrayList<Message>();
 		
+		String path = this.getClass().getResource("").getPath();
+
+		System.out.println("Starting path: " + path);
+
+		path = path.replaceAll(Pattern.quote("%20"), " ");
+		path = path.replaceAll(Pattern.quote(".jar!"), ".jar");
+
+		System.out.println("Finalzied Path: " + path);
+
+		File f = new File(path);
+
+		System.out.println("Path Object:" + f);
+
+		while (!f.getName().equals("org")) {
+			f = f.getParentFile();
+		}
+
+		containingFolder = f.getParentFile().getParentFile();
 	}
 
 	protected Process getProcess() {
@@ -49,7 +69,7 @@ public class ServerPythonInterface {
 			pythonProcess.destroyForcibly();
 		}
 
-		File scriptPath = new File(containingFolder, "client.py");
+		File scriptPath = new File(ScoutingServer.serverSettings.serverPythonLoc);
 
 		System.out.println(containingFolder);
 
@@ -61,7 +81,13 @@ public class ServerPythonInterface {
 		pythonInput = new BufferedWriter(new OutputStreamWriter(pythonProcess.getOutputStream()));
 		pythonOutput = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
 		
-		new Thread(() -> readInputFromPython()).start();
+		new Thread(() -> {
+			try {
+				readInputFromPython();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 	private static Process cmd(String cmd, boolean block) {
