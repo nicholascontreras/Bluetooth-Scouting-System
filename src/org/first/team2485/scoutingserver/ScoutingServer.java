@@ -30,10 +30,6 @@ import javax.swing.text.JTextComponent;
 import com.sun.glass.ui.Timer;
 
 public class ScoutingServer extends JFrame {
-
-	private JTabbedPane tabbedPane;
-	
-	private JFrame myself;
 	
 	protected static ServerSettings serverSettings;
 	
@@ -44,109 +40,25 @@ public class ScoutingServer extends JFrame {
 
 	private ScoutingServer() {
 		
-		this.myself = this;
-		
 		serverSettings = new ServerSettings();
 
-		JPanel lowerPane = new JPanel();
+		JPanel centerPanel = new JPanel();
 		
-		JButton scriptButton = new JButton("Start Script");
+		this.setLayout(new BorderLayout());
 		
-		DirectoryButton scriptDirButton = new DirectoryButton(this);
+		add(centerPanel, BorderLayout.CENTER);
 		
-		DirectoryButton dataDirButton = new DirectoryButton(this);
+		JPanel chatWindows = new JPanel();
 		
-		UploadButton uploadButton = new UploadButton(dataDirButton);
+		chatWindows.add(new ServerChatWindows());
 		
-		QuitButton quit = new QuitButton(this);
-		
-		scriptButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				if (scriptDirButton.getSelectedFile() == null) {
-					
-					System.out.println("Script file not selected yet");
-					
-					return;
-					
-				}
-				
-				ServerPythonInterface.getInstance().startScript();
-				
-			}
-		});
-		
-		JButton deployJARButton = new JButton("Deploy Version");
-		
-		deployJARButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
-				
-				chooser.showOpenDialog(myself);
-				
-				File file = chooser.getSelectedFile();
-				
-				System.out.println("Selected JAR: " + file.getName());
-				
-				//TODO: Add functionality to send
-				
-			}
-		});
-		
-		JButton addChatButton = new JButton("New Chat");
-		
-		addChatButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				String clientName = JOptionPane.showInputDialog(myself, "Client Name");
-				
-				DMTab newTab = new DMTab(clientName, ServerPythonInterface.getInstance().getProcess());
-				
-			}
-		});
-		
-		
-		
-		lowerPane.add(scriptButton, BorderLayout.NORTH);
-		lowerPane.add(scriptDirButton, BorderLayout.NORTH);
-		lowerPane.add(dataDirButton, BorderLayout.NORTH);
-		lowerPane.add(uploadButton, BorderLayout.NORTH);
-		lowerPane.add(quit, BorderLayout.NORTH);
-		lowerPane.add(deployJARButton, BorderLayout.NORTH);
-		
-		this.tabbedPane = new JTabbedPane();
-		
-		JPanel mainPage = new JPanel();
-		
-		
-		
-		this.add(lowerPane, BorderLayout.SOUTH);
+		add(chatWindows, BorderLayout.LINE_END);
 		
 		this.pack();
 		
 		this.setVisible(true);
 		
 		
-	}
-
-	private static Process cmd(String cmd, boolean block) {
-		try {
-			Process p = Runtime.getRuntime().exec(cmd);
-			if (block) {
-				p.waitFor();
-			}
-			return p;
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 
@@ -179,13 +91,6 @@ public class ScoutingServer extends JFrame {
 		return data;
 	}
 	
-	private static String convertStreamToString(InputStream is) {
-		Scanner s = new Scanner(is).useDelimiter("\\A");
-		String toReturn = s.hasNext() ? s.next() : "";
-		s.close();
-		return toReturn;
-	}
-	
 	class ServerSettings {
 		
 		protected String scoutingFormSaveFile;
@@ -198,7 +103,7 @@ public class ScoutingServer extends JFrame {
 		private void loadServerSettings() {
 			
 			try {
-				FileReader fileReader = new FileReader(ServerPythonInterface.getInstance().containingFolder.getParent() + "/serverSettings.txt");
+				FileReader fileReader = new FileReader(ServerPythonInterface.getInstance().containingFolder.getPath() + "/serverSettings.txt");
 				
 				BufferedReader reader = new BufferedReader(fileReader);
 				

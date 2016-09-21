@@ -8,7 +8,7 @@ public class Message {
 	private static final char[] RESERVED_CHARACTORS = {'^', '*'};
 	
 	public enum MessageType {
-		CHAT, SCOUTING_DATA, FORM_UPDATE, BET_PLACE, BET_PAYOUT;
+		CHAT, SCOUTING_DATA, FORM_UPDATE, BET_PLACE, BET_PAYOUT, RAW_DATA;
 	}
 	
 	private String reciever;

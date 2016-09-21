@@ -40,7 +40,7 @@ while True:
 		print(str(client_sock))
 		connectedSocketNames.append(name)
 		connectedSockets.append(client_sock)
-		print("Socket added")
+		print("NEW_SCOUT:" + name)
 
 	except Exception as err:
     		print("no incoming connections", err)
@@ -66,10 +66,10 @@ while True:
 				print(ready_to_write)
 				print(in_error)
 			except select.error: 
+				print ("LOST_SCOUT:" + connectedSocketNames[counter])
 				curSocket.close()
 				connectedSockets.remove(curSocket)
 				connectedSocketNames.remove(connectedSocketNames[counter])
-				print ("connection error")
 				continue
 			if len(ready_to_read) > 0:
 				recv = curSocket.recv(2048)
@@ -88,11 +88,10 @@ while True:
 		        				elif (broadcastToSend.find("BROADCAST") is 0):
 		          					curSocket.send(broadcastToSend)
 		          			except Exception:
-		          				print ("Connection disconnected for " + connectedSocketNames[counter])
+		          				print ("LOST_SCOUT:" + connectedSocketNames[counter])
 		          				#curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
 		          				curSocket.close()
 		          				connectedSockets.remove(curSocket)
 		          				connectedSocketNames.remove(connectedSocketNames[counter])
-		          				print ("Connection successfully disconnected")
 		          				continue
 			counter += 1

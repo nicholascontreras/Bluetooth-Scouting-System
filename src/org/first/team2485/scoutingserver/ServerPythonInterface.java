@@ -12,33 +12,35 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import org.first.team2485.common.Message;
+import org.first.team2485.common.Message.MessageType;
 import org.first.team2485.scoutingform.ScoutingForm;
 
 public class ServerPythonInterface {
 	protected ArrayList<Message> messageHistory;
 	protected ArrayList<Message> unhandledMessages;
-	
+
 	protected File containingFolder;
-	
+
 	private static ServerPythonInterface instance;
-	
+
 	private Process pythonProcess;
-	
+
 	private BufferedWriter pythonInput;
 	private BufferedReader pythonOutput;
 
-	protected static ServerPythonInterface getInstance() { // only allow one instance
+	protected static ServerPythonInterface getInstance() { // only allow one
+															// instance
 		if (instance == null) {
 			instance = new ServerPythonInterface();
 		}
-		
+
 		return instance;
 	}
-	
+
 	private ServerPythonInterface() {
 		messageHistory = new ArrayList<Message>();
 		unhandledMessages = new ArrayList<Message>();
-		
+
 		String path = this.getClass().getResource("").getPath();
 
 		System.out.println("Starting path: " + path);
@@ -80,7 +82,7 @@ public class ServerPythonInterface {
 		}
 		pythonInput = new BufferedWriter(new OutputStreamWriter(pythonProcess.getOutputStream()));
 		pythonOutput = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
-		
+
 		new Thread(() -> {
 			try {
 				readInputFromPython();
@@ -102,7 +104,7 @@ public class ServerPythonInterface {
 		}
 		return null;
 	}
-	
+
 	private void readInputFromPython() throws IOException {
 
 		while (pythonProcess.isAlive() || pythonOutput.ready()) {
@@ -126,13 +128,25 @@ public class ServerPythonInterface {
 						messageHistory.add(message);
 						unhandledMessages.add(message);
 					} else {
+						if (curMessage.startsWith("NEW_SCOUT")) {
+							Message newScout = new Message("NEW_SCOUT", "SERVER",
+									curMessage.substring(curMessage.indexOf(":") + 1), MessageType.RAW_DATA);
+
+							messageHistory.add(newScout);
+							unhandledMessages.add(newScout);
+						} else if (curMessage.startsWith("LOST_SCOUT")) {
+							Message lostScout = new Message("LOST_SCOUT", "SERVER",
+									curMessage.substring(curMessage.indexOf(":") + 1), MessageType.RAW_DATA);
+
+							messageHistory.add(lostScout);
+							unhandledMessages.add(lostScout);
+						}
 					}
 				}
 			} else {
 				System.out.println("Input was null");
 			}
 		}
-
 
 		sendStringToPython("READ_ONLY");
 		pythonInput.newLine();
@@ -144,11 +158,11 @@ public class ServerPythonInterface {
 			e.printStackTrace();
 		}
 	}
-	
+
 	protected void sendStringToPython(String s) {
 		try {
 			pythonInput.write(s + "^");
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
