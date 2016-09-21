@@ -110,15 +110,16 @@ public class SubmitButton extends JButton implements ActionListener {
 		if (resetForm) {
 			form.reset();
 			
-			if (ClientPythonInterface.getInstance().checkForUpdate()) {
-				
-				int input = JOptionPane.showConfirmDialog(null,
-						"You have a recieved a updated version of the scouting form from the server.\nWould you like to swtich to that version?",
-						"Update", JOptionPane.YES_NO_OPTION);
-				
-				if (input == JOptionPane.YES_OPTION) {
-					ClientPythonInterface.getInstance().switchToUpdatedVersion();
-				}
+		}
+		
+		if (ClientPythonInterface.getInstance().checkForUpdate()) {
+			
+			int input = JOptionPane.showConfirmDialog(null,
+					"You have a recieved a updated version of the scouting form from the server.\nWould you like to swtich to that version?",
+					"Update", JOptionPane.YES_NO_OPTION);
+			
+			if (input == JOptionPane.YES_OPTION) {
+				ClientPythonInterface.getInstance().switchToUpdatedVersion();
 			}
 		}
 	}

@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -31,9 +33,20 @@ public class ClientPythonInterface {
 															// instance
 		if (instance == null) {
 			instance = new ClientPythonInterface();
-			File f = new File(instance.getClass().getResource("").getPath().substring(5));
 
-			System.out.println(f);
+			String path = instance.getClass().getResource("").getPath();
+
+			System.out.println("Starting path: " + path);
+
+			path = path.replaceAll(Pattern.quote("%20"), " ");
+			path = path.replaceAll(Pattern.quote(".jar!"), ".jar");
+			path = path.substring(6);
+
+			System.out.println("Finalzied Path: " + path);
+
+			File f = new File(path);
+
+			System.out.println("Path Object:" + f);
 
 			while (!f.getName().equals("org")) {
 				f = f.getParentFile();
@@ -64,11 +77,7 @@ public class ClientPythonInterface {
 
 		System.out.println("Script path: " + scriptPath);
 
-		try {
-			pythonProcess = cmd("python -u " + scriptPath.getCanonicalPath(), false);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		pythonProcess = cmd("python -u " + scriptPath.getPath(), false);
 
 		System.out.println("started cmd. Is alive? " + pythonProcess.isAlive());
 
@@ -130,7 +139,7 @@ public class ClientPythonInterface {
 						unhandledMessages.add(message);
 					} else {
 						Message debugMessage = new Message(curMessage, ScoutingForm.name, "DEBUG", MessageType.CHAT);
-						
+
 						messageHistory.add(debugMessage);
 						unhandledMessages.add(debugMessage);
 					}
@@ -230,9 +239,23 @@ public class ClientPythonInterface {
 
 	protected boolean checkForUpdate() {
 
+		File curFile = new File(getClass().getResource("").getPath());
+
+		while (!curFile.getName().equals("org")) {
+			curFile = curFile.getParentFile();
+		}
+
+		curFile = curFile.getParentFile();
+		
+		curFile = new File(curFile.getName().substring(0, curFile.getName().length() - 1).replace("%20", " "));
+
+		System.out.println("I am: " + curFile.getName());
+
 		for (File f : containingFolder.listFiles()) {
-			if (f.getName().contains("(UPDATE)")) {
-				return true;
+			if (!f.getName().equals(curFile.getName())) {
+				if (f.lastModified() > curFile.lastModified()) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -240,18 +263,48 @@ public class ClientPythonInterface {
 
 	protected void switchToUpdatedVersion() {
 
+		System.out.println("Updating version");
+
+		File curFile = new File(getClass().getResource("").getPath());
+
+		while (!curFile.getName().equals("org")) {
+			curFile = curFile.getParentFile();
+		}
+
+		curFile = curFile.getParentFile();
+		
+		curFile = new File(curFile.getName().substring(0, curFile.getName().length() - 1).replace("%20", " "));
+
+		System.out.println("I am: " + curFile.getName());
+
+		File mostRecentFile = curFile;
+
 		for (File f : containingFolder.listFiles()) {
-			if (f.getName().contains("Bluetooth Scouting Client.jar")) {
-				f.renameTo(new File(containingFolder,
-						"Bluetooth Scouting Client (OLD:" + System.currentTimeMillis() + ").jar"));
+			if (!f.getName().equals(curFile.getName())) {
+				if (f.getName().contains("Bluetooth Scouting Client")) {
+					
+					System.out.println("Checking: " + f.getName());
+					
+					System.out.println("Best: " + mostRecentFile.lastModified());
+					System.out.println("Cur: " + f.lastModified());
+					
+					if (mostRecentFile == null || f.lastModified() > mostRecentFile.lastModified()) {
+						mostRecentFile = f;
+					}
+				}
 			}
 		}
 
-		for (File f : containingFolder.listFiles()) {
-			if (f.getName().contains("(UPDATE)")) {
-				f.renameTo(new File(containingFolder, "Bluetooth Scouting Client.jar"));
-			}
-		}
-		
+		System.out.println("moved update to regular");
+
+		String command = "java -jar \"" + containingFolder + "/" + mostRecentFile.getName() + "\"";
+
+		System.out.println("Running command:" + command);
+
+		cmd(command, false);
+
+		System.out.println("ran new form");
+
+		System.exit(0);
 	}
 }
