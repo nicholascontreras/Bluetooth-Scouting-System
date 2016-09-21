@@ -40,7 +40,6 @@ public class ClientPythonInterface {
 
 			path = path.replaceAll(Pattern.quote("%20"), " ");
 			path = path.replaceAll(Pattern.quote(".jar!"), ".jar");
-			path = path.substring(6);
 
 			System.out.println("Finalzied Path: " + path);
 
