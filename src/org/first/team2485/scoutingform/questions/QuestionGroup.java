@@ -52,7 +52,14 @@ public class QuestionGroup extends Question {
 	
 	@Override
 	public String getData() {
-		return "";
+		
+		String data = "";
+		
+		for (Question cur : questions) {
+			data += cur.getData();
+		}
+		
+		return data;
 	}
 	
 	@Override
