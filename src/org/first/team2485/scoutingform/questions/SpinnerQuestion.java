@@ -33,7 +33,7 @@ public class SpinnerQuestion extends Question{
 	}
 	
 	public String getData() {
-		return internalName + "=" + (int) spinner.getValue() + ",";
+		return internalName + "," + (int) spinner.getValue() + ",";
 	}
 	
 	public void clear() {

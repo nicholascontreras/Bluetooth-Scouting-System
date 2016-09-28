@@ -35,10 +35,10 @@ public class MultipleChoiceQuestion extends Question {
 	public String getData() {
 		for (int i = 0; i < optionButtons.length; i++) {
 			if (optionButtons[i].isSelected()) {
-				return internalName + "=" + i + ",";
+				return internalName + "," + i + ",";
 			}
 		}
-		return internalName + "=-1,";
+		return internalName + ",-1,";
 	}
 	public void clear() {
 		optionButtonGroup.clearSelection();

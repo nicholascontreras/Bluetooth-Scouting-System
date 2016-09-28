@@ -33,7 +33,7 @@ public class ShortResponseQuestion extends Question {
 	}
 	
 	public String getData() {
-		return internalName + "=\"" + textField.getText() + "\",";
+		return internalName + ",\"" + textField.getText() + "\",";
 	}
 	
 	

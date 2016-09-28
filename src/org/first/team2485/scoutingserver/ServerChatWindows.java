@@ -36,6 +36,7 @@ public class ServerChatWindows extends JPanel implements ActionListener {
 
 		textAreas = new ArrayList<JTextArea>();
 		textFields = new ArrayList<JTextField>();
+		sendButtons = new ArrayList<JButton>();
 
 		tabbedPane.addTab("Broadcasts", createTab("Broadcasts"));
 		tabbedPane.addTab("Debug Console", createTab("Debug Console"));
