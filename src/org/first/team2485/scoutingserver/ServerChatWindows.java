@@ -25,8 +25,12 @@ public class ServerChatWindows extends JPanel implements ActionListener {
 	private ArrayList<JTextArea> textAreas;
 	private ArrayList<JTextField> textFields;
 	private ArrayList<JButton> sendButtons;
+	
+	private ScoutingServer server;
 
-	public ServerChatWindows() {
+	public ServerChatWindows(ScoutingServer server) {
+		
+		this.server = server;
 
 		this.setPreferredSize(new Dimension(600, 400));
 
@@ -68,9 +72,9 @@ public class ServerChatWindows extends JPanel implements ActionListener {
 
 		return chatTab;
 	}
-	
+
 	protected void addChatWindowForScout(String scoutName) {
-		
+
 	}
 
 	private void updateChatWindows() {
@@ -111,6 +115,14 @@ public class ServerChatWindows extends JPanel implements ActionListener {
 							}	
 						}
 					}
+				} else if(curMessage.getMessageType() == MessageType.SCOUTING_DATA) {
+					
+					server.handleScoutingData(curMessage);
+					
+				} else if(curMessage.getMessageType() == MessageType.BET_PLACE) {
+					
+					server.processNewBet(curMessage);
+					
 				} else if (curMessage.getMessageType() == MessageType.RAW_DATA) {
 					if (curMessage.getMessage().equals("NEW_SCOUT")) {
 						tabbedPane.insertTab("DM with " + curMessage.getSender(), null, createTab("DM with " + curMessage.getSender()), null, tabbedPane.getTabCount()- 1);
@@ -143,28 +155,29 @@ public class ServerChatWindows extends JPanel implements ActionListener {
 		if (actionCommand.equals("Broadcasts Button")) {
 			msg = new Message(textFields.get(0).getText(), "BROADCAST", "SERVER", MessageType.CHAT);
 			textFields.get(0).setText("");
-		} else if (actionCommand.startsWith("DM with ") && actionCommand.endsWith("Button")) {		
+		} else if (actionCommand.startsWith("DM with ") && actionCommand.endsWith("Button")) {
 			for (int i = 1; i < textFields.size() - 1; i++) {
-			
+
 				if (actionCommand.startsWith(tabbedPane.getTitleAt(i))) {
-					msg = new Message(textFields.get(i).getText(), tabbedPane.getTitleAt(i).substring("DM with ".length() + 1), "SERVER", MessageType.CHAT);
+					msg = new Message(textFields.get(i).getText(),
+							tabbedPane.getTitleAt(i).substring("DM with ".length() + 1), "SERVER", MessageType.CHAT);
 					textFields.get(i).setText("");
 					break;
 				}
-			}	
+			}
 		} else if (actionCommand.endsWith("DEAD")) {
 			for (int i = 1; i < textFields.size() - 1; i++) {
-				
+
 				if (actionCommand.startsWith(tabbedPane.getTitleAt(i))) {
 					textAreas.remove(i);
 					textFields.remove(i);
 					sendButtons.remove(i);
-					
+
 					tabbedPane.removeTabAt(i);
-					
+
 					break;
 				}
-			}	
+			}
 		}
 
 		if (msg != null) {

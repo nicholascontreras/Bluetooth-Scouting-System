@@ -27,6 +27,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.JTextComponent;
 
+import org.first.team2485.common.Message;
+
 import com.sun.glass.ui.Timer;
 
 public class ScoutingServer extends JFrame {
@@ -50,7 +52,7 @@ public class ScoutingServer extends JFrame {
 		
 		JPanel chatWindows = new JPanel();
 		
-		chatWindows.add(new ServerChatWindows());
+		chatWindows.add(new ServerChatWindows(this));
 		
 		add(chatWindows, BorderLayout.LINE_END);
 		
@@ -89,6 +91,14 @@ public class ScoutingServer extends JFrame {
 
 		System.out.println(data);
 		return data;
+	}
+	
+	protected void handleScoutingData(Message scoutingData) {
+		// Do scouting stuff here
+	}
+	
+	protected void processNewBet(Message newBetMessage) {
+		// Process new bet
 	}
 	
 	class ServerSettings {
