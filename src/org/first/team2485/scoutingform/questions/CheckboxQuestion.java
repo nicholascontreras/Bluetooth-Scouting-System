@@ -33,7 +33,7 @@ public class CheckboxQuestion extends Question {
 	}
 	
 	public String getData() {
-		String data = internalName + "=";
+		String data = internalName + ",";
 		for (int i = 0; i < checkboxes.length; i++) {
 			data += (checkboxes[i].isSelected() ? "1^" : "0^");
 		}
