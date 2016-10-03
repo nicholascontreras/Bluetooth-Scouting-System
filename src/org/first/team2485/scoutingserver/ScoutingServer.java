@@ -94,7 +94,10 @@ public class ScoutingServer extends JFrame {
 	}
 	
 	protected void handleScoutingData(Message scoutingData) {
-		// Do scouting stuff here
+		
+		String formData = scoutingData.getMessage(); // <-- this String is the CSV from the client's form
+		
+		// Upload to G-Sheets
 	}
 	
 	protected void processNewBet(Message newBetMessage) {
