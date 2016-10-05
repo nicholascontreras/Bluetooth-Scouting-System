@@ -162,7 +162,6 @@ public class ServerPythonInterface {
 	protected void sendStringToPython(String s) {
 		try {
 			pythonInput.write(s + "^");
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

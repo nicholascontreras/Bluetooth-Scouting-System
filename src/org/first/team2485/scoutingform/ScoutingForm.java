@@ -42,7 +42,8 @@ public class ScoutingForm extends JPanel {
 		JPanel wrapperPanel = new JPanel(new BorderLayout());
 		wrapperPanel.add(this, BorderLayout.CENTER);
 		this.setPreferredSize(new Dimension(600, 400));
-		wrapperPanel.add(new ChatWindows(), BorderLayout.LINE_END);
+		wrapperPanel.add(new ChatWindows(), BorderLayout.EAST);
+		wrapperPanel.add(new GamblingPanel(), BorderLayout.WEST);
 
 		frame.add(wrapperPanel);
 

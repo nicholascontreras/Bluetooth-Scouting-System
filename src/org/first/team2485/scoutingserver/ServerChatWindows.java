@@ -118,7 +118,7 @@ public class ServerChatWindows extends JPanel implements ActionListener {
 					}
 				} else if(curMessage.getMessageType() == MessageType.SCOUTING_DATA) {
 					
-					server.handleScoutingData(curMessage);
+					server.submitScoutingDataToSheet(curMessage);
 					
 				} else if(curMessage.getMessageType() == MessageType.BET_PLACE) {
 					
