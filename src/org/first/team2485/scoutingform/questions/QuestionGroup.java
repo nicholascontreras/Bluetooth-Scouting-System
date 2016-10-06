@@ -10,6 +10,8 @@ import javax.swing.JCheckBox;
 
 import org.jdesktop.swingx.JXCollapsiblePane;
 
+
+
 /**
  * 
  * @author Jeremy McCulloch

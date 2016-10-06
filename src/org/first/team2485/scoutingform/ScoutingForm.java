@@ -107,31 +107,32 @@ public class ScoutingForm extends JPanel {
 		);
 		
 		ScoutingFormTab autonomous = new ScoutingFormTab("Autonomous", 
+			new CheckboxQuestion("Which defense was up?", "autodefenceaction", "CDF", "Moat", "Ramparts", "Rock Wall", "Rough Terrain", "Low Bar"),
 			new CheckboxQuestion("Did they...", "autodefenceaction", "Approach a Defense", "Cross a Defense"), 
 			new SpinnerQuestion("How many high goals did they make?", "autohighgoals"),
 			new SpinnerQuestion("How many low goals did they make?", "autolowgoals")
 		);
 		
 		ScoutingFormTab teleop = new ScoutingFormTab("Teleop", 
-			new QuestionGroup("Defense Category A", 
-				new MultipleChoiceQuestion("Which defense is up?", "defenceA", "Cheval de Frise", "Portcullis"),
+			new QuestionGroup("CDF", 
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceAtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceAcount")
 			),
-			new QuestionGroup("Defense Category B", 
-				new MultipleChoiceQuestion("Which defense is up?", "defenceB", "Moat", "Ramparts"),
+			new QuestionGroup("Moat", 
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceBtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceBcount")
 			),
-			new QuestionGroup("Defense Category C", 
-				new MultipleChoiceQuestion("Which defense is up?", "defenceC", "Drawbridge", "Sally Port"),
+			new QuestionGroup("Ramparts", 
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceCtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceCcount")
 			),
-			new QuestionGroup("Defense Category D", 
-				new MultipleChoiceQuestion("Which defense is up?", "defenceD", "Rough Terrain", "Rock Wall"),
+			new QuestionGroup("Rock Wall", 
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceDtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceDcount")
+			),
+			new QuestionGroup("Rough Terrain", 
+					new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceDtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+					new SpinnerQuestion("How many times did they cross it?", "defenceDcount")
 			),
 			new QuestionGroup("Low Bar", 
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "lowbartime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
