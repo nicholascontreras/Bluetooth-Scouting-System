@@ -9,12 +9,33 @@ import org.first.team2485.common.Message;
 
 public class GamblingSystem {
 	
+	private HashSet<GamblingScout> gamblingScouts;
+	
 	private HashSet<PlacedBet> placedBets;
 	
 	private boolean canPlaceBets;
 	
 	protected GamblingSystem() {
 		canPlaceBets = true;
+	}
+	
+	protected void addScout(String name) {
+		gamblingScouts.add(new GamblingScout(name, 100));
+	}
+	
+	protected void removeScout(String name) {
+		
+		GamblingScout toRemove = null;
+		
+		for (GamblingScout cur : gamblingScouts) {
+			if (cur.name.equals(name)) {
+				toRemove = cur;
+			}
+		}
+		
+		if (toRemove != null) {
+			gamblingScouts.remove(toRemove);
+		}
 	}
 	
 	protected void placeNewBet(String placer, String alliance, int predictedScore, int betAmount) {
@@ -27,13 +48,7 @@ public class GamblingSystem {
 		return canPlaceBets;
 	}
 	
-	protected Set<Message> enterMatchScoreAndPayout(int redScore, int blueScore) { //TODO: Troy do bet math
-		
-		HashSet<Message> payouts = new HashSet<>();
-		
-		for (PlacedBet curBet : placedBets) {
-			
-		}
+	protected Message enterMatchScoreAndPayout(int redScore, int blueScore) { //TODO: Troy do bet math
 
 		canPlaceBets = true;
 		
@@ -45,7 +60,20 @@ public class GamblingSystem {
 			}
 		}, ScoutingServer.serverSettings.secondsAfterMatchForBet * 1000);
 		
-		return payouts;
+		return null;
+	}
+	
+	private class GamblingScout {
+		
+		private String name;
+		private int money;
+		
+		private GamblingScout(String name, int money) {
+			
+			this.name = name;
+			this.money = money;
+			
+		}	
 	}
 	
 	private class PlacedBet {

@@ -81,9 +81,11 @@ public class ChatWindows extends JPanel implements ActionListener {
 
 			if (!unhandledMessages.isEmpty()) {
 
-				Message curMessage = ClientPythonInterface.getInstance().unhandledMessages.remove(0);
+				Message curMessage = ClientPythonInterface.getInstance().unhandledMessages.get(0);
 
 				if (curMessage.getMessageType() == MessageType.CHAT) {
+					
+					ClientPythonInterface.getInstance().unhandledMessages.remove(0);
 
 					SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
 					String formatedTime = sdf.format(new Date(curMessage.getTimeSent()));
