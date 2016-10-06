@@ -101,7 +101,7 @@ public class ScoutingForm extends JPanel {
 
 		//@formatter:off
 		
-		ScoutingFormTab prematch = new ScoutingFormTab("Prematch",
+		ScoutingFormTab prematch = new ScoutingFormTab("Prematch", 
 			new SpinnerQuestion("Team number", "teamnumber"),
 			new SpinnerQuestion("Match Number:", "matchnumber"),
 			new MultipleChoiceQuestion("No Show?", "noShow", "They were a no show", "They were not a no show")
