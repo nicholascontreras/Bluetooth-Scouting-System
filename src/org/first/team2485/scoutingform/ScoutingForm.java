@@ -107,7 +107,7 @@ public class ScoutingForm extends JPanel {
 		);
 		
 		ScoutingFormTab autonomous = new ScoutingFormTab("Autonomous", 
-			new CheckboxQuestion("Which defense was up?", "autodefenceaction", "CDF", "Moat", "Ramparts", "Rock Wall", "Rough Terrain", "Low Bar"),
+			new MultipleChoiceQuestion("Which defense was up?", "SelectedAutoDefence", "CDF", "Moat", "Ramparts", "Rock Wall", "Rough Terrain", "Low Bar"),
 			new CheckboxQuestion("Did they...", "autodefenceaction", "Approach a Defense", "Cross a Defense"), 
 			new SpinnerQuestion("How many high goals did they make?", "autohighgoals"),
 			new SpinnerQuestion("How many low goals did they make?", "autolowgoals")
@@ -115,27 +115,27 @@ public class ScoutingForm extends JPanel {
 		
 		ScoutingFormTab teleop = new ScoutingFormTab("Teleop", 
 			new QuestionGroup("CDF", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceAtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "CDFTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceAcount")
 			),
 			new QuestionGroup("Moat", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceBtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "moatTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceBcount")
 			),
 			new QuestionGroup("Ramparts", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceCtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rampartsTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceCcount")
 			),
 			new QuestionGroup("Rock Wall", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceDtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rockWallTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceDcount")
 			),
 			new QuestionGroup("Rough Terrain", 
-					new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "defenceDtime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+					new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "roughTerrainTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 					new SpinnerQuestion("How many times did they cross it?", "defenceDcount")
 			),
 			new QuestionGroup("Low Bar", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "lowbartime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "lowBarTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "lowbarcount")
 			),
 			new SpinnerQuestion("How many high goals did they make?", "highmade"),
