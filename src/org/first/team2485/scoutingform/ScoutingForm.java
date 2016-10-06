@@ -103,39 +103,43 @@ public class ScoutingForm extends JPanel {
 		
 		ScoutingFormTab prematch = new ScoutingFormTab("Prematch",
 			new SpinnerQuestion("Team number", "teamnumber"),
-			new SpinnerQuestion("Match Number:", "matchnumber")
+			new SpinnerQuestion("Match Number:", "matchnumber"),
+			new MultipleChoiceQuestion("No Show?", "noShow", "They were a no show", "They were not a no show")
 		);
 		
 		ScoutingFormTab autonomous = new ScoutingFormTab("Autonomous", 
 			new MultipleChoiceQuestion("Which defense was up?", "SelectedAutoDefence", "CDF", "Moat", "Ramparts", "Rock Wall", "Rough Terrain", "Low Bar"),
 			new CheckboxQuestion("Did they...", "autodefenceaction", "Approach a Defense", "Cross a Defense"), 
-			new SpinnerQuestion("How many high goals did they make?", "autohighgoals"),
-			new SpinnerQuestion("How many low goals did they make?", "autolowgoals")
+			new SpinnerQuestion("How many high goals did they make?", "autoHighGoals"),
+			new SpinnerQuestion("How many high goals did they miss?", "autoHighMiss"),
+			new SpinnerQuestion("How many low goals did they make?", "autoLowGoals"),
+			new SpinnerQuestion("How many low goals did they miss?", "autoLowMiss")
+
 		);
 		
 		ScoutingFormTab teleop = new ScoutingFormTab("Teleop", 
 			new QuestionGroup("CDF", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "CDFTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "CDFTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceAcount")
 			),
 			new QuestionGroup("Moat", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "moatTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "moatTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceBcount")
 			),
 			new QuestionGroup("Ramparts", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rampartsTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rampartsTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceCcount")
 			),
 			new QuestionGroup("Rock Wall", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rockWallTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rockWallTime","0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "defenceDcount")
 			),
 			new QuestionGroup("Rough Terrain", 
-					new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "roughTerrainTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+					new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "roughTerrainTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 					new SpinnerQuestion("How many times did they cross it?", "defenceDcount")
 			),
 			new QuestionGroup("Low Bar", 
-				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "lowBarTime", "0 - 5", "5 - 10", "10 - 15", "15+", "Failed"),
+				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "lowBarTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "lowbarcount")
 			),
 			new SpinnerQuestion("How many high goals did they make?", "highmade"),
@@ -146,19 +150,15 @@ public class ScoutingForm extends JPanel {
 		);//<--- sad winky face 
 		
 		ScoutingFormTab ratings = new ScoutingFormTab("Ratings", 
-			new MultipleChoiceQuestion("Speed", "speed", "Snail", "Slow", "Average", "Speedy", "Lightning"),
-			new MultipleChoiceQuestion("Manueverability", "manuever", "Unresponsive", "Sluggish", "Average" , "Responsive", "Nimble"),
-			new MultipleChoiceQuestion("Shooter Repeatability", "shooterrepeatability", "Unreliable", "Sketchy", "Average", "Consistent", "Reliable", "N/A"), 
-			new MultipleChoiceQuestion("Shooter Speed", "shooterspeed", "Snail", "Slow", "Average", "Speedy", "Lightning", "N/A"),
-			new MultipleChoiceQuestion("Defense", "defence", "Shitty", "Decent", "Average", "Good", "Badass", "N/A"), 
-			new MultipleChoiceQuestion("Defense Evasion", "defenceevasion", "Shitty", "Decent", "Average", "Good", "Badass", "N/A"), 
-			new MultipleChoiceQuestion("Overall Impression", "overall", "Shitty", "Decent", "Average", "Good", "Badass")
+			new MultipleChoiceQuestion("Intake Speed:", "speed", "N/A", "1", "2", "3", "4", "5"),
+			new MultipleChoiceQuestion("Manueverability", "manueverability", "1", "2", "3" , "4", "5"),
+			new MultipleChoiceQuestion("Defense", "defense", "N/A", "1", "2", "3", "4", "5"), 
+			new MultipleChoiceQuestion("Driver Skill", "driverSkill", "1", "2", "3", "4", "5")
+			
 		);
 		
 		ScoutingFormTab misc = new ScoutingFormTab("Miscellaneous", 
-			new SpinnerQuestion("How many tech fouls did they get?", "techfouls"),
-			new SpinnerQuestion("How many other fouls did they get?", "otherfouls"),
-			new CheckboxQuestion("What role(s) did they play?", "roles", "Shooter", "Breacher", "Defender", "Support"),
+			new SpinnerQuestion("How many fouls?", "otherFouls"),
 			new MultipleChoiceQuestion("Did they break down?", "breakdown", "Yes", "No"),
 			new FreeResponseQuestion("Comments:", "comments")
 		);
