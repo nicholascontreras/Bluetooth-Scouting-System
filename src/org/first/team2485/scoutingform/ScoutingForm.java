@@ -163,6 +163,7 @@ public class ScoutingForm extends JPanel {
 			new FreeResponseQuestion("Comments:", "comments")
 		);
 		
+		
 		//@formatter:on
 
 		new ScoutingForm(prematch, autonomous, teleop, ratings, misc);
