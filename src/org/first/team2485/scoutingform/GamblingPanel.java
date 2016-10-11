@@ -2,6 +2,7 @@ package org.first.team2485.scoutingform;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,56 +22,64 @@ import org.first.team2485.common.Message.MessageType;
 import org.first.team2485.scoutingform.questions.MultipleChoiceQuestion;
 import org.first.team2485.scoutingform.questions.SpinnerQuestion;
 
-public class GamblingPanel extends JPanel {
+public class GamblingPanel extends JPanel implements ActionListener {
 
 	private ArrayList<GamblingScout> gamblingScouts;
 	private JPanel panel;
+	private JPanel scoutContainer;
 
 	protected GamblingPanel() {
 		this.setPreferredSize(new Dimension(500, 600));
 
 		this.setLayout(new BorderLayout());
-		
+
 		panel = new JPanel();
-		
+
 		panel.setBorder(BorderFactory.createTitledBorder("Gambling"));
 
 		gamblingScouts = new ArrayList<GamblingScout>();
-		
+
 		JTextArea winOrLose = new JTextArea();
-		SpinnerQuestion amountBet = new SpinnerQuestion ("Amount Bet", "amountbet");
-		MultipleChoiceQuestion winningTeam = new MultipleChoiceQuestion("Which alliance do you think will win?", "WinningAlliance", "Red Alliance", "Blue Alliance");
-		SpinnerQuestion winningScore = new SpinnerQuestion ("How much do you think the winning team will score?", "winningscore");
+		SpinnerQuestion amountBet = new SpinnerQuestion("Amount Bet", "amountbet");
+		MultipleChoiceQuestion winningTeam = new MultipleChoiceQuestion("Which alliance do you think will win?",
+				"WinningAlliance", "Red Alliance", "Blue Alliance");
+		SpinnerQuestion winningScore = new SpinnerQuestion("How many more points do you believe the winning alliance will receive?",
+				"winningDifference");
 		JButton sendButton = new JButton("Submit Bet");
-		
-		
+		sendButton.setActionCommand("SendButton");
+		sendButton.addActionListener(this);
+
 		panel.add(winOrLose);
 		panel.add(winningTeam);
 		panel.add(winningScore);
 		panel.add(amountBet);
 		panel.add(sendButton);
-		
-		
+
+		scoutContainer = new JPanel();
+		scoutContainer.setLayout(new FlowLayout());
+		this.add(scoutContainer, BorderLayout.SOUTH);
 
 		for (int i = 0; i < 10; i++) {
-			GamblingScout newScout = new GamblingScout(ScoutingForm.name, 100); //get Name?
+			GamblingScout newScout = new GamblingScout(i + ":", 100); // get
+																		// Name?
 
 			gamblingScouts.add(newScout);
 
-			this.add(newScout, BorderLayout.SOUTH);
+			scoutContainer.add(newScout);
 		}
-		
-		if (amountBet.getData() != null){
-			String betQuestionResult = amountBet.getData();
-			int curBet = Integer.parseInt(betQuestionResult.substring(betQuestionResult.indexOf(",") + 1, betQuestionResult.length()-1));
 
-			if (curBet > gamblingScouts.get(gamblingScouts.size()-1).getMoney()){
-				curBet = gamblingScouts.get(gamblingScouts.size()-1).getMoney();
+		if (amountBet.getData() != null) {
+			String betQuestionResult = amountBet.getData();
+			int curBet = Integer.parseInt(
+					betQuestionResult.substring(betQuestionResult.indexOf(",") + 1, betQuestionResult.length() - 1));
+
+			if (curBet > gamblingScouts.get(gamblingScouts.size() - 1).getMoney()) {
+				curBet = gamblingScouts.get(gamblingScouts.size() - 1).getMoney();
 			}
 		}
 
 		this.add(panel, BorderLayout.CENTER);
-		
+
 		new Thread(() -> updateWindow()).start();
 	}
 
@@ -119,14 +128,7 @@ public class GamblingPanel extends JPanel {
 							GamblingScout newScout = new GamblingScout(curName, curMoney);
 
 							gamblingScouts.add(newScout);
-
-							if (gamblingScouts.size() % 3 == 0) {
-								this.add(newScout, BorderLayout.SOUTH);
-							} else if (gamblingScouts.size() % 3 == 1) {
-								this.add(newScout, BorderLayout.EAST);
-							} else {
-								this.add(newScout, BorderLayout.WEST);
-							}
+							scoutContainer.add(newScout);
 						}
 
 						int index = message.indexOf(",");
@@ -137,6 +139,16 @@ public class GamblingPanel extends JPanel {
 
 						message = message.substring(index + 1);
 					}
+				} else if (curMessage.getMessageType() == MessageType.GAMBLING_STATUS) {
+					ClientPythonInterface.getInstance().unhandledMessages.remove(0);
+					
+					if (curMessage.getMessage().equals("OPEN")) {
+						
+					} else if (curMessage.getMessage().equals("CLOSE")) {
+						
+					}
+				} else if (curMessage.getMessageType() == MessageType.BET_CONFIRM) {
+					ClientPythonInterface.getInstance().unhandledMessages.remove(0);
 				}
 			}
 		}
@@ -164,17 +176,24 @@ public class GamblingPanel extends JPanel {
 			moneyLabel = new JLabel("$" + money);
 			moneyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			this.add(moneyLabel);
-			
+
 			this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		}
 
-		public int getMoney(){
+		public int getMoney() {
 			return money;
 		}
+
 		private void update() {
 			moneyLabel.setText("$" + money);
 		}
 	}
 
-	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getActionCommand().equals("SendButton")) {
+			new Message("", "SERVER", ScoutingForm.name, MessageType.BET_PLACE);
+		}
+	}
 }
