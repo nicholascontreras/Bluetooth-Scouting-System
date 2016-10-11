@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.first.team2485.common.Message;
+import org.first.team2485.common.Message.MessageType;
 
 public class GamblingSystem {
 	
@@ -13,10 +14,7 @@ public class GamblingSystem {
 	
 	private HashSet<PlacedBet> placedBets;
 	
-	private boolean canPlaceBets;
-	
 	protected GamblingSystem() {
-		canPlaceBets = true;
 	}
 	
 	protected void addScout(String name) {
@@ -44,19 +42,15 @@ public class GamblingSystem {
 		
 	}
 	
-	protected boolean canPlaceBets() {
-		return canPlaceBets;
-	}
-	
 	protected Message enterMatchScoreAndPayout(int redScore, int blueScore) { //TODO: Troy do bet math
 
-		canPlaceBets = true;
+		ServerPythonInterface.getInstance().sendStringToPython(new Message("OPEN", "BROADCAST", "SERVER", MessageType.GAMBLING_STATUS).getSendableForm());
 		
 		new Timer().schedule(new TimerTask() {
 			
 			@Override
 			public void run() {
-				canPlaceBets = false;
+				ServerPythonInterface.getInstance().sendStringToPython(new Message("CLOSE", "BROADCAST", "SERVER", MessageType.GAMBLING_STATUS).getSendableForm());
 			}
 		}, ScoutingServer.serverSettings.secondsAfterMatchForBet * 1000);
 		
