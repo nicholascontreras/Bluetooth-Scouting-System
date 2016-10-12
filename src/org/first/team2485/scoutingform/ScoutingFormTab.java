@@ -1,4 +1,7 @@
 package org.first.team2485.scoutingform;
+import java.awt.Component;
+
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
