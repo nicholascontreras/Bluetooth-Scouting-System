@@ -209,5 +209,5 @@ public class GamblingPanel extends JPanel implements ActionListener {
 				new Message("Gambling is closed, try again after this match ends", ScoutingForm.name, "SERVER", MessageType.CHAT);
 			}
 		} 
-	}
+	} 
 }
