@@ -89,7 +89,7 @@ public class BlueAllianceSystem {
 			String redTeamsAsString = getValueFromString(rawRedAllianceString, "teams", false);
 			redTeamsAsString = redTeamsAsString.substring(1, redTeamsAsString.length() - 1);
 			int redTeams[] = new int[3];
-			String firstRedTeam = redTeamsAsString.substring(4, redTeamsAsString.indexOf(",") - 1);
+			String firstRedTeam = redTeamsAsString.substring(4, redTeamsAsString.indexOf(",") - 1); 
 			redTeams[0] = Integer.parseInt(firstRedTeam);
 			redTeamsAsString = redTeamsAsString.substring(redTeamsAsString.indexOf("frc"));
 			redTeams[1] = Integer.parseInt(redTeamsAsString.substring(3, redTeamsAsString.indexOf(",") - 1));
