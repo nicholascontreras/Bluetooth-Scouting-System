@@ -62,29 +62,6 @@ public class ClientPythonInterface {
 		}
 
 		containingFolder = f.getParentFile().getParentFile();
-
-		System.out.println("Writing");
-
-		FileReader reader = null;
-		try {
-			reader = new FileReader("C:/Users/Nicholas/Desktop/TestJar.txt");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-
-		BufferedReader bReader = new BufferedReader(reader);
-
-		try {
-			String data = bReader.readLine();
-
-			bReader.close();
-
-			saveFormVersion(data);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("Writen");
 	}
 
 	protected Process getProcess() {

@@ -147,6 +147,7 @@ public class ScoutingServer extends JFrame implements ActionListener {
 		protected String scoutingFormSaveFile;
 		protected String serverPythonLoc;
 		protected int secondsAfterMatchForBet;
+		protected String compID;
 
 		private ServerSettings() {
 			loadServerSettings();
@@ -163,6 +164,7 @@ public class ScoutingServer extends JFrame implements ActionListener {
 				scoutingFormSaveFile = reader.readLine();
 				serverPythonLoc = reader.readLine();
 				secondsAfterMatchForBet = Integer.parseInt(reader.readLine());
+				compID = reader.readLine();
 
 				reader.close();
 			} catch (IOException e) {
