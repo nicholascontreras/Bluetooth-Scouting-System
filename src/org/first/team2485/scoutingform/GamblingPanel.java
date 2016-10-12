@@ -33,6 +33,7 @@ public class GamblingPanel extends JPanel implements ActionListener {
 	private SpinnerQuestion winningDifference;
 	private JButton sendButton;
 	private boolean gamblingOpen = true;
+	private int curMoneyBet;
 
 	protected GamblingPanel() {
 		this.setPreferredSize(new Dimension(500, 600));
@@ -44,6 +45,10 @@ public class GamblingPanel extends JPanel implements ActionListener {
 		panel.setBorder(BorderFactory.createTitledBorder("Gambling"));
 
 		gamblingScouts = new ArrayList<GamblingScout>();
+		
+		for (GamblingScout g : gamblingScouts){
+			curMoneyBet = g.getMoney();
+		}
 
 		winOrLose = new JTextArea();
 		amountBet = new SpinnerQuestion("Amount Bet", "amountbet");

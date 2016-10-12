@@ -35,6 +35,7 @@ import javax.swing.text.JTextComponent;
 
 import org.first.team2485.common.Message;
 import org.first.team2485.common.Message.MessageType;
+import org.first.team2485.scoutingform.ScoutingForm;
 
 import com.sun.glass.ui.Timer;
 
@@ -47,6 +48,8 @@ public class ScoutingServer extends JFrame implements ActionListener {
 	private GamblingSystem gamblingSystem;
 	
 	private JButton deployUpdateButton;
+	
+	private JButton turnOffGambling;
 
 	public static void main(String[] args) {
 		new ScoutingServer();
@@ -76,7 +79,13 @@ public class ScoutingServer extends JFrame implements ActionListener {
 		deployUpdateButton = new JButton("Deploy Update");
 		deployUpdateButton.addActionListener(this);
 		
+		turnOffGambling = new JButton("Turn off Gambling");
+		turnOffGambling.setActionCommand("gamblingOff");
+		
+		
+		
 		buttonPanel.add(deployUpdateButton);
+		buttonPanel.add(turnOffGambling);
 
 		this.pack();
 
@@ -191,5 +200,10 @@ public class ScoutingServer extends JFrame implements ActionListener {
 				}
 			}
 		}
+		if (arg0.getActionCommand().equals("gamblingOff")) {
+			gamblingSystem.turnBetsOff();
+		} 
 	}
+	
+	
 }

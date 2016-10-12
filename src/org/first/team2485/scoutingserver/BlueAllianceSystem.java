@@ -97,7 +97,7 @@ public class BlueAllianceSystem {
 			redTeams[2] = Integer.parseInt(redTeamsAsString.substring(3, redTeamsAsString.indexOf(",") - 1));
 
 			newMatch = new Match(matchType, matchNumber, blueTeams, blueScore, redTeams, redScore);
-			matches.add(newMatch);
+			matches.add(newMatch.getMatchNumber(), newMatch);
 		}
 
 	}
@@ -167,6 +167,10 @@ public class BlueAllianceSystem {
 			this.blueScore = blueScore;
 			this.redTeams = redTeams;
 			this.redScore = redScore;
+		}
+		
+		public int getMatchNumber(){
+			return matchNumber;
 		}
 	}
 }

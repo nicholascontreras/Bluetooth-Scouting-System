@@ -53,6 +53,14 @@ public class GamblingSystem {
 		return canPlaceBets;
 	}
 	
+	public void turnBetsOff(){
+		canPlaceBets = false;
+	}
+	
+	public void turnBetsOn(){
+		canPlaceBets = true;
+	}
+	
 	protected Message enterMatchScoreAndPayout(int redScore, int blueScore) { //TODO: Troy do bet math
 
 		canPlaceBets = true;
