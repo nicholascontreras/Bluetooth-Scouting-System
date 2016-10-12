@@ -34,7 +34,7 @@ while True:
 		print("accept")
 		ready_to_read, ready_to_write, in_error = select.select([client_sock], [], [], 15)
 		print("select")
-		name = client_sock.recv(2048)
+		name = client_sock.recv(16777216)
 		print("read: " + name)
 		client_sock.setblocking(False)
 		print(str(client_sock))

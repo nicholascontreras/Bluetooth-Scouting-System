@@ -3,6 +3,9 @@ package org.first.team2485.scoutingform;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,7 +43,7 @@ public class ClientPythonInterface {
 	private ClientPythonInterface() {
 		messageHistory = new ArrayList<Message>();
 		unhandledMessages = new ArrayList<Message>();
-		
+
 		String path = this.getClass().getResource("").getPath();
 
 		System.out.println("Starting path: " + path);
@@ -59,6 +62,29 @@ public class ClientPythonInterface {
 		}
 
 		containingFolder = f.getParentFile().getParentFile();
+
+		System.out.println("Writing");
+
+		FileReader reader = null;
+		try {
+			reader = new FileReader("C:/Users/Nicholas/Desktop/TestJar.txt");
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+
+		BufferedReader bReader = new BufferedReader(reader);
+
+		try {
+			String data = bReader.readLine();
+
+			bReader.close();
+
+			saveFormVersion(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Writen");
 	}
 
 	protected Process getProcess() {
@@ -221,18 +247,17 @@ public class ClientPythonInterface {
 
 	private void saveFormVersion(String newFormVersion) throws IOException {
 
-		String[] dataToWrite = newFormVersion.split(Pattern.quote("!@#$%^&*()"));
+		byte[] byteArray = new byte[newFormVersion.length()];
 
-		FileWriter fileWriter = new FileWriter(new File(containingFolder, "Bluetooth Scouting Client (UPDATE).jar"));
-
-		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-		for (String s : dataToWrite) {
-			bufferedWriter.write(s);
-			bufferedWriter.newLine();
+		for (int i = 0; i < byteArray.length; i++) {
+			byteArray[i] = (byte) newFormVersion.charAt(i);
 		}
 
-		bufferedWriter.close();
+		FileOutputStream outputStream = new FileOutputStream(new File(containingFolder, "Bluetooth Scouting Client " + System.currentTimeMillis()));
+
+		outputStream.write(byteArray);
+
+		outputStream.close();
 	}
 
 	protected boolean checkForUpdate() {
@@ -244,7 +269,7 @@ public class ClientPythonInterface {
 		}
 
 		curFile = curFile.getParentFile();
-		
+
 		curFile = new File(curFile.getName().substring(0, curFile.getName().length() - 1).replace("%20", " "));
 
 		System.out.println("I am: " + curFile.getName());
@@ -270,7 +295,7 @@ public class ClientPythonInterface {
 		}
 
 		curFile = curFile.getParentFile();
-		
+
 		curFile = new File(curFile.getName().substring(0, curFile.getName().length() - 1).replace("%20", " "));
 
 		System.out.println("I am: " + curFile.getName());
@@ -280,12 +305,12 @@ public class ClientPythonInterface {
 		for (File f : containingFolder.listFiles()) {
 			if (!f.getName().equals(curFile.getName())) {
 				if (f.getName().contains("Bluetooth Scouting Client")) {
-					
+
 					System.out.println("Checking: " + f.getName());
-					
+
 					System.out.println("Best: " + mostRecentFile.lastModified());
 					System.out.println("Cur: " + f.lastModified());
-					
+
 					if (mostRecentFile == null || f.lastModified() > mostRecentFile.lastModified()) {
 						mostRecentFile = f;
 					}

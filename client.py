@@ -88,7 +88,7 @@ while True:
 			        	except select.error:
 			        		print ("Error in Python 'Select'")
 			        	if len(ready_to_read) > 0:
-			        		recv = sock.recv(2048)
+			        		recv = sock.recv(16777216)
 			        		msgs = recv.split("^")
 			        		for msg in msgs:
 			        			if (not(msg is "")):
