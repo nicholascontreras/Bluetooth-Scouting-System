@@ -27,6 +27,12 @@ public class GamblingPanel extends JPanel implements ActionListener {
 	private ArrayList<GamblingScout> gamblingScouts;
 	private JPanel panel;
 	private JPanel scoutContainer;
+	private JTextArea winOrLose;
+	private SpinnerQuestion amountBet;
+	private MultipleChoiceQuestion winningTeam;
+	private SpinnerQuestion winningDifference;
+	private JButton sendButton;
+	private boolean gamblingOpen = true;
 
 	protected GamblingPanel() {
 		this.setPreferredSize(new Dimension(500, 600));
@@ -39,19 +45,19 @@ public class GamblingPanel extends JPanel implements ActionListener {
 
 		gamblingScouts = new ArrayList<GamblingScout>();
 
-		JTextArea winOrLose = new JTextArea();
-		SpinnerQuestion amountBet = new SpinnerQuestion("Amount Bet", "amountbet");
-		MultipleChoiceQuestion winningTeam = new MultipleChoiceQuestion("Which alliance do you think will win?",
+		winOrLose = new JTextArea();
+		amountBet = new SpinnerQuestion("Amount Bet", "amountbet");
+		winningTeam = new MultipleChoiceQuestion("Which alliance do you think will win?",
 				"WinningAlliance", "Red Alliance", "Blue Alliance");
-		SpinnerQuestion winningScore = new SpinnerQuestion("How many more points do you believe the winning alliance will receive?",
+		winningDifference = new SpinnerQuestion("What do you think the point difference will be between the winning and losing alliance?",
 				"winningDifference");
-		JButton sendButton = new JButton("Submit Bet");
+		sendButton = new JButton("Submit Bet");
 		sendButton.setActionCommand("SendButton");
 		sendButton.addActionListener(this);
 
 		panel.add(winOrLose);
 		panel.add(winningTeam);
-		panel.add(winningScore);
+		panel.add(winningDifference);
 		panel.add(amountBet);
 		panel.add(sendButton);
 
@@ -143,9 +149,9 @@ public class GamblingPanel extends JPanel implements ActionListener {
 					ClientPythonInterface.getInstance().unhandledMessages.remove(0);
 					
 					if (curMessage.getMessage().equals("OPEN")) {
-						
-					} else if (curMessage.getMessage().equals("CLOSE")) {
-						
+						gamblingOpen = true;
+					} else if (curMessage.getMessage().equals("CLOSED")) {
+						gamblingOpen = false;
 					}
 				} else if (curMessage.getMessageType() == MessageType.BET_CONFIRM) {
 					ClientPythonInterface.getInstance().unhandledMessages.remove(0);
@@ -193,7 +199,15 @@ public class GamblingPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getActionCommand().equals("SendButton")) {
-			new Message("", "SERVER", ScoutingForm.name, MessageType.BET_PLACE);
-		}
-	}
+			if (gamblingOpen){
+				String getAmountBet = amountBet.getData().substring(amountBet.getData().indexOf(",") + 1);
+				String getWinningTeam = winningTeam.getData().substring(winningTeam.getData().indexOf(",") + 1);
+				String getWinningDifference = winningDifference.getData().substring(winningDifference.getData().indexOf(","), winningDifference.getData().length()-1);
+				new Message("", "SERVER", ScoutingForm.name, MessageType.BET_PLACE);
+			}
+			else {
+				new Message("Gambling is closed, try again after this match ends", ScoutingForm.name, "SERVER", MessageType.CHAT);
+			}
+		} 
+	} 
 }
