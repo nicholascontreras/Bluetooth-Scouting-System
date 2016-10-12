@@ -34,6 +34,7 @@ public class GamblingPanel extends JPanel implements ActionListener {
 	private JButton sendButton;
 	private boolean gamblingOpen = true;
 	private int curMoneyBet;
+	private JTextArea currentMoneyBet;
 
 	protected GamblingPanel() {
 		this.setPreferredSize(new Dimension(500, 600));
@@ -43,6 +44,7 @@ public class GamblingPanel extends JPanel implements ActionListener {
 		panel = new JPanel();
 
 		panel.setBorder(BorderFactory.createTitledBorder("Gambling"));
+		panel.setPreferredSize(new Dimension(500, 450));
 
 		gamblingScouts = new ArrayList<GamblingScout>();
 		
@@ -59,15 +61,19 @@ public class GamblingPanel extends JPanel implements ActionListener {
 		sendButton = new JButton("Submit Bet");
 		sendButton.setActionCommand("SendButton");
 		sendButton.addActionListener(this);
+		currentMoneyBet = new  JTextArea("Current money bet on this match: $" + curMoneyBet);
+		currentMoneyBet.setFont(currentMoneyBet.getFont().deriveFont(14f));
 
 		panel.add(winOrLose);
 		panel.add(winningTeam);
 		panel.add(winningDifference);
 		panel.add(amountBet);
 		panel.add(sendButton);
+		panel.add(currentMoneyBet);
 
 		scoutContainer = new JPanel();
 		scoutContainer.setLayout(new FlowLayout());
+		scoutContainer.setPreferredSize(new Dimension(500, 150));
 		this.add(scoutContainer, BorderLayout.SOUTH);
 
 		for (int i = 0; i < 10; i++) {
