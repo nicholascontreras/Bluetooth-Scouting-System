@@ -214,7 +214,7 @@ public class GamblingPanel extends JPanel implements ActionListener {
 				String getAmountBet = amountBet.getData().substring(amountBet.getData().indexOf(",") + 1);
 				String getWinningTeam = winningTeam.getData().substring(winningTeam.getData().indexOf(",") + 1);
 				String getWinningDifference = winningDifference.getData().substring(winningDifference.getData().indexOf(","), winningDifference.getData().length()-1);
-				new Message("", "SERVER", ScoutingForm.name, MessageType.BET_PLACE);
+				new Message("BetPlaced" + getAmountBet + "," + getWinningTeam + "," + getWinningDifference, "SERVER", ScoutingForm.name, MessageType.BET_PLACE);
 			}
 			else {
 				new Message("Gambling is closed, try again after this match ends", ScoutingForm.name, "SERVER", MessageType.CHAT);
