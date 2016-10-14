@@ -3,17 +3,15 @@ package org.first.team2485.scoutingform;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+
+import javax.swing.JOptionPane;
 
 import org.first.team2485.common.Message;
 import org.first.team2485.common.Message.MessageType;
@@ -32,6 +30,8 @@ public class ClientPythonInterface {
 	private BufferedReader pythonOutput;
 	private BufferedWriter pythonInput;
 
+	private String os;
+
 	protected static ClientPythonInterface getInstance() { // only allow one
 															// instance
 		if (instance == null) {
@@ -43,6 +43,14 @@ public class ClientPythonInterface {
 	private ClientPythonInterface() {
 		messageHistory = new ArrayList<Message>();
 		unhandledMessages = new ArrayList<Message>();
+
+		os = System.getProperty("os.name");
+
+		if (os.contains("Windows")) {
+			os = "windows";
+		} else {
+			os = "mac";
+		}
 
 		String path = this.getClass().getResource("").getPath();
 
@@ -74,7 +82,7 @@ public class ClientPythonInterface {
 			pythonProcess.destroyForcibly();
 		}
 
-		File scriptPath = new File(containingFolder, "client.py");
+		File scriptPath = new File(containingFolder, os + "Client.py");
 
 		System.out.println("Script path: " + scriptPath);
 
@@ -95,6 +103,19 @@ public class ClientPythonInterface {
 	}
 
 	private void readInputFromPython() throws IOException {
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		if (os.equals("mac")) {
+			String address = JOptionPane.showInputDialog("Server Address:");
+			pythonInput.write(address);
+			pythonInput.newLine();
+			pythonInput.flush();
+		}
 
 		try {
 			Thread.sleep(1000);
@@ -179,6 +200,12 @@ public class ClientPythonInterface {
 	protected String saveData(String data, boolean forceWrite) { // method
 																	// messy,
 																	// fix
+		
+		File unsentDataFolder = new File(containingFolder, "unsentData");
+		
+		if (!unsentDataFolder.isDirectory()) {
+			unsentDataFolder.mkdir();
+		}
 
 		File file = new File(containingFolder, "scoutingData.csv");
 
@@ -205,19 +232,12 @@ public class ClientPythonInterface {
 
 	protected String sendData() {
 
-		try {
-			pythonInput.write("");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "An error occurred sending the data";
-		}
+		sendStringToPython("SEND_SCOUTING_DATA");
 
-		try {
-			if (pythonOutput.readLine().equals("Scouting Data Received")) {
+		for (int i = 0; i < 10; i++) {
+			if (!new File(containingFolder, "unsentData/scoutingData.csv").exists()) {
 				return "Sucessfully sent scouting data";
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return "An error occurred sending the data";
 	}
@@ -230,7 +250,8 @@ public class ClientPythonInterface {
 			byteArray[i] = (byte) newFormVersion.charAt(i);
 		}
 
-		FileOutputStream outputStream = new FileOutputStream(new File(containingFolder, "Bluetooth Scouting Client " + System.currentTimeMillis()));
+		FileOutputStream outputStream = new FileOutputStream(
+				new File(containingFolder, "Bluetooth Scouting Client " + System.currentTimeMillis()));
 
 		outputStream.write(byteArray);
 

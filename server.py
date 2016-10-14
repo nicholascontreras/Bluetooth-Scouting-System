@@ -5,7 +5,8 @@ import socket
 
 
 if sys.version < '3':
-	input = raw_input
+	print("BELOW VERSION 3")
+	sys.exit(1)
 
 # use this method instead of the normal input("")
 def waitForJavaInput():
@@ -34,8 +35,8 @@ queuedBroadcasts = []
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
 advertise_service( server_sock, "Scouting Server", service_id = uuid, service_classes = [ uuid, SERIAL_PORT_CLASS ], profiles = [ SERIAL_PORT_PROFILE ])
 
-print("RFCOMM channel: " + str(port))
-print("TCP/IP channel: " + str(port2))
+print("RFCOMM address: " + str(port))
+print("TCP/IP address: " + str(port2))
 
 while True:
 	try:
@@ -43,7 +44,7 @@ while True:
 		print("accept(RFCOMM)")
 		ready_to_read, ready_to_write, in_error = select.select([client_sock], [], [], 15)
 		print("select(RFCOMM)")
-		name = str(client_sock.recv(2048))
+		name = client_sock.recv(2048).decode("utf-8")
 		print("read:(RFCOMM) " + name)
 		client_sock.setblocking(False)
 		print(str(client_sock))
@@ -97,8 +98,8 @@ while True:
 				connectedSocketNames.remove(connectedSocketNames[counter])
 				continue
 			if len(ready_to_read) > 0:
-				recv = curSocket.recv(16777216)
-				msgs = recv.decode.split("^")
+				recv = curSocket.recv(16777216).deocde("utf-8")
+				msgs = recv.split("^")
 				for msg in msgs:
 
 					if (msg.find("SERVER") == 0):
@@ -109,9 +110,9 @@ while True:
 		        		if broadcastToSend != "READ_ONLY":
 		        			try:
 		        				if ( broadcastToSend.find(connectedSocketNames[counter] is 0)): 
-		        					curSocket.send(broadcastToSend)
+		        					curSocket.send(broadcastToSend.encode("utf-8"))
 		        				elif (broadcastToSend.find("BROADCAST") is 0):
-		        					curSocket.send(broadcastToSend)
+		        					curSocket.send(broadcastToSend.encode("utf-8"))
 		        			except Exception:
 		        				print ("LOST_SCOUT:" + connectedSocketNames[counter])
 		        				#curSocket.shutdown(2)# 0 = done receiving, 1 = done sending, 2 = both
