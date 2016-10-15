@@ -98,7 +98,7 @@ while True:
 				connectedSocketNames.remove(connectedSocketNames[counter])
 				continue
 			if len(ready_to_read) > 0:
-				recv = curSocket.recv(16777216).deocde("utf-8")
+				recv = curSocket.recv(2048).decode("utf-8")
 				msgs = recv.split("^")
 				for msg in msgs:
 

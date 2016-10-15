@@ -57,9 +57,6 @@ public class ScoutingServer extends JFrame implements ActionListener {
 
 	private ScoutingServer() {
 
-		submitScoutingDataToSheet(
-				new Message("FooBar,67,TeamNumber,4,AutoHigh,7", "SERVER", "Fredrick", MessageType.SCOUTING_DATA));
-
 		serverSettings = new ServerSettings();
 
 		gamblingSystem = new GamblingSystem();

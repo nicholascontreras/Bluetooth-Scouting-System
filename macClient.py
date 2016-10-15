@@ -67,7 +67,7 @@ while True:
 			        	except select.error:
 			        		print ("Error in Python 'Select'")
 			        	if len(ready_to_read) > 0:
-			        		recv = sock.recv(16777216).decode("utf-8")
+			        		recv = sock.recv(2048).decode("utf-8")
 			        		msgs = recv.split("^")
 			        		for msg in msgs:
 			        			if (not(msg is "")):
