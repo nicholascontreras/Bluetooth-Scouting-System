@@ -23,8 +23,12 @@ public class QuestionGroup extends Question {
 	private JXCollapsiblePane pane;
 	private JCheckBox checkbox;
 	private Question[] questions;
+	
+	private String internalName;
 
-	public QuestionGroup(String title, Question... questions) {
+	public QuestionGroup(String title, String internalName, Question... questions) {
+		
+		this.internalName = internalName;
 		
 		this.setLayout(new BorderLayout());
 		
@@ -55,7 +59,7 @@ public class QuestionGroup extends Question {
 	@Override
 	public String getData() {
 		
-		String data = "";
+		String data = internalName + "," + (checkbox.isSelected() ? 1 : 0) + ",";
 		
 		for (Question cur : questions) {
 			data += cur.getData();

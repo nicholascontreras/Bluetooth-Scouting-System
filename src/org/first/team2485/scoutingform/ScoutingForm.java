@@ -70,7 +70,7 @@ public class ScoutingForm extends JPanel {
 		frame.pack();
 		frame.setVisible(true);
 		this.repaint();
-
+		
 	}
 
 	public String submit() {
@@ -122,27 +122,27 @@ public class ScoutingForm extends JPanel {
 		);
 		
 		ScoutingFormTab teleop = new ScoutingFormTab("Teleop", 
-			new QuestionGroup("CDF", 
+			new QuestionGroup("CDF", "CDFUp",
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "CDFTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "CDFCount")
 			),
-			new QuestionGroup("Moat", 
+			new QuestionGroup("Moat", "MoatUp",
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "moatTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "moatCount")
 			),
-			new QuestionGroup("Ramparts", 
+			new QuestionGroup("Ramparts", "RampartsUp",
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rampartsTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "rampartsCount")
 			),
-			new QuestionGroup("Rock Wall", 
+			new QuestionGroup("Rock Wall", "RockWallUp",
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "rockWallTime","0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "rockWallCount")
 			),
-			new QuestionGroup("Rough Terrain", 
+			new QuestionGroup("Rough Terrain", "RoughTerrainUp",
 					new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "roughTerrainTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 					new SpinnerQuestion("How many times did they cross it?", "roughTerraincount")
 			),
-			new QuestionGroup("Low Bar", 
+			new QuestionGroup("Low Bar", "LowBarUp",
 				new MultipleChoiceQuestion("How long did it take to cross on avg (seconds)?", "lowBarTime", "0 - 2", "3 - 4", "5 - 6", "7 - 8", "8+", "Failed"),
 				new SpinnerQuestion("How many times did they cross it?", "lowBarCount")
 			),
